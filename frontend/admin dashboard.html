@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BuyNest - Admin Dashboard</title>
+<!-- BuyNest Browser Tab Logo -->
+<link rel="icon" type="image/png" href="buynest-logo.png">
+    <link rel="stylesheet" href="admin dashboard.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">BuyNest</div>
+
+        <p class="admin-label">ADMIN PANEL</p>
+
+        <a href="#" class="active">📊 Dashboard</a>
+        <a href="admin user.html">👥 Users</a>
+        <a href="admin products.html">📦 Products</a>
+        <a href="admin order.html">🛒 Orders</a>
+        <a href="admin-delivery.html">🚚 Delivery</a>
+
+        <a href="welcome.html" class="logout">
+            ↪ Logout
+        </a>
+
+    </aside>
+
+
+    <!-- Main Content -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Welcome back, Admin 👋</p>
+            </div>
+
+            <div class="admin-profile">
+                👨‍💼 Admin
+            </div>
+
+        </header>
+
+
+        <!-- Statistics -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div>
+                    <p>Total Users</p>
+                    <h2>120</h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div>
+                    <p>Total Products</p>
+                    <h2>85</h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🛒</div>
+                <div>
+                    <p>Total Orders</p>
+                    <h2>64</h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🚚</div>
+                <div>
+                    <p>Deliveries</p>
+                    <h2>28</h2>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Quick Actions -->
+
+        <section class="section">
+
+            <h2>Quick Actions</h2>
+
+            <div class="action-grid">
+
+                <div class="action-card">
+                    <span>📦</span>
+                    <h3>Manage Products</h3>
+                    <p>Add, update and delete products.</p>
+                    <button>Manage Products</button>
+                </div>
+
+                <div class="action-card">
+                    <span>🛒</span>
+                    <h3>Manage Orders</h3>
+                    <p>View and manage customer orders.</p>
+                    <button>View Orders</button>
+                </div>
+
+                <div class="action-card">
+                    <span>👥</span>
+                    <h3>Manage Users</h3>
+                    <p>View registered customers.</p>
+                    <button>View Users</button>
+                </div>
+
+                <div class="action-card">
+                    <span>🚚</span>
+                    <h3>Delivery Management</h3>
+                    <p>Assign orders to delivery persons.</p>
+                    <button>Manage Delivery</button>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Recent Orders -->
+
+        <section class="section">
+
+            <h2>Recent Orders</h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Delivery</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>#BN1001</td>
+                            <td>Customer 1</td>
+                            <td>₹2,499</td>
+                            <td>
+                                <span class="status confirmed">
+                                    Confirmed
+                                </span>
+                            </td>
+                            <td>Not Assigned</td>
+                        </tr>
+
+                        <tr>
+                            <td>#BN1002</td>
+                            <td>Customer 2</td>
+                            <td>₹4,999</td>
+                            <td>
+                                <span class="status delivery">
+                                    Out for Delivery
+                                </span>
+                            </td>
+                            <td>Ravi</td>
+                        </tr>
+
+                        <tr>
+                            <td>#BN1003</td>
+                            <td>Customer 3</td>
+                            <td>₹1,299</td>
+                            <td>
+                                <span class="status delivered">
+                                    Delivered
+                                </span>
+                            </td>
+                            <td>Arun</td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+    <script src="admin dashboard.js"></script>
+
+</body>
+
+</html>

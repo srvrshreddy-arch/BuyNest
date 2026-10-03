@@ -1,0 +1,617 @@
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   BODY
+===================================================== */
+
+body {
+
+    font-family: Arial, sans-serif;
+
+    background: #f5f7fb;
+
+    color: #222;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header {
+
+    height: 77px;
+
+    background: #111827;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 7%;
+
+}
+
+
+.logo {
+
+    color: white;
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+}
+
+
+nav {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 30px;
+
+}
+
+
+nav a {
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 16px;
+
+    font-weight: 500;
+
+}
+
+
+nav a:hover {
+
+    color: #60a5fa;
+
+}
+
+
+nav a.active {
+
+    color: #60a5fa;
+
+    font-weight: bold;
+
+}
+
+
+/* =====================================================
+   PAGE HEADING
+===================================================== */
+
+.page-heading {
+
+    text-align: center;
+
+    padding: 50px 20px 35px;
+
+    background: #eef2ff;
+
+}
+
+
+.page-heading h1 {
+
+    font-size: 38px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.page-heading p {
+
+    color: #6b7280;
+
+    font-size: 17px;
+
+}
+
+
+/* =====================================================
+   ORDERS SECTION
+===================================================== */
+
+.orders-section {
+
+    width: 86%;
+
+    max-width: 1100px;
+
+    margin: 40px auto;
+
+    flex: 1;
+
+}
+
+
+/* =====================================================
+   ORDERS CONTAINER
+===================================================== */
+
+#ordersContainer {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+}
+
+
+/* =====================================================
+   ORDER CARD
+===================================================== */
+
+.order-card {
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.07);
+
+}
+
+
+/* =====================================================
+   ORDER TOP
+===================================================== */
+
+.order-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    padding-bottom: 18px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.order-id {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.order-status {
+
+    padding: 7px 15px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+}
+
+
+/* PLACED */
+
+.status-placed {
+
+    background: #dbeafe;
+
+    color: #2563eb;
+
+}
+
+
+/* PROCESSING */
+
+.status-processing {
+
+    background: #fef3c7;
+
+    color: #d97706;
+
+}
+
+
+/* SHIPPED */
+
+.status-shipped {
+
+    background: #e0e7ff;
+
+    color: #4f46e5;
+
+}
+
+
+/* DELIVERED */
+
+.status-delivered {
+
+    background: #dcfce7;
+
+    color: #16a34a;
+
+}
+
+
+/* OTHER */
+
+.status-default {
+
+    background: #e5e7eb;
+
+    color: #374151;
+
+}
+
+
+/* =====================================================
+   ORDER INFORMATION
+===================================================== */
+
+.order-info {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+
+}
+
+
+.info-box {
+
+    background: #f8fafc;
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+}
+
+
+.info-box p {
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.info-box strong {
+
+    font-size: 17px;
+
+}
+
+
+/* =====================================================
+   ORDER BOTTOM
+===================================================== */
+
+.order-bottom {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 20px;
+
+}
+
+
+.view-button {
+
+    background: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    padding: 11px 20px;
+
+    border-radius: 7px;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.view-button:hover {
+
+    background: #1d4ed8;
+
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading {
+
+    text-align: center;
+
+    padding: 50px;
+
+    color: #6b7280;
+
+    font-size: 18px;
+
+}
+
+
+/* =====================================================
+   NO ORDERS
+===================================================== */
+
+.no-orders {
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 60px 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.07);
+
+}
+
+
+.no-orders h2 {
+
+    margin-bottom: 10px;
+
+}
+
+
+.no-orders p {
+
+    color: #6b7280;
+
+    margin-bottom: 25px;
+
+}
+
+
+.shop-button {
+
+    display: inline-block;
+
+    background: #2563eb;
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 12px 22px;
+
+    border-radius: 7px;
+
+    font-weight: bold;
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.error-message {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+
+    background: #111827;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 30px;
+
+    margin-top: auto;
+
+}
+
+
+footer h2 {
+
+    margin-bottom: 8px;
+
+}
+
+
+footer p {
+
+    color: #d1d5db;
+
+}
+
+
+.footer-links {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 25px;
+
+    margin: 20px 0;
+
+}
+
+
+.footer-links a {
+
+    color: white;
+
+    text-decoration: none;
+
+}
+
+
+.footer-links a:hover {
+
+    color: #60a5fa;
+
+}
+
+
+.copyright {
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    header {
+
+        padding: 0 20px;
+
+    }
+
+
+    .logo {
+
+        font-size: 25px;
+
+    }
+
+
+    nav {
+
+        gap: 12px;
+
+    }
+
+
+    nav a {
+
+        font-size: 13px;
+
+    }
+
+
+    .page-heading h1 {
+
+        font-size: 30px;
+
+    }
+
+
+    .orders-section {
+
+        width: 92%;
+
+    }
+
+
+    .order-top {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 12px;
+
+    }
+
+
+    .order-info {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .order-bottom {
+
+        justify-content: stretch;
+
+    }
+
+
+    .view-button {
+
+        width: 100%;
+
+    }
+
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        BuyNest - Delivery Management
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="admin-delivery.css">
+
+</head>
+
+<body>
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+
+        <div class="logo">
+            BuyNest
+        </div>
+
+
+        <p class="panel-title">
+            ADMIN PANEL
+        </p>
+
+
+        <a href="admin dashboard.html">
+            📊 Dashboard
+        </a>
+
+
+        <a href="admin user.html">
+            👥 Users
+        </a>
+
+
+        <a href="admin products.html">
+            📦 Products
+        </a>
+
+
+        <a href="admin order.html">
+            🛒 Orders
+        </a>
+
+
+        <a
+            href="admin-delivery.html"
+            class="active">
+
+            🚚 Delivery
+
+        </a>
+
+
+        <a
+            href="welcome.html"
+            class="logout">
+
+            ↪ Logout
+
+        </a>
+
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="main">
+
+
+        <!-- ================= TOP ================= -->
+
+        <div class="top">
+
+
+            <div>
+
+                <h2>
+                    Delivery Management
+                </h2>
+
+
+                <p>
+                    Assign orders to delivery persons
+                </p>
+
+            </div>
+
+
+            <div class="admin-box">
+                👨‍💼 Admin
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= DELIVERY PERSONS ================= -->
+
+        <h2 class="section-title">
+
+            🚚 Delivery Persons
+
+        </h2>
+
+
+        <div
+            id="deliveryPersons"
+            class="delivery-persons">
+
+            <!-- Delivery persons loaded from database -->
+
+        </div>
+
+
+        <!-- ================= ORDERS ================= -->
+
+        <h2 class="section-title">
+
+            🛒 Orders
+
+        </h2>
+
+
+        <div class="table-container">
+
+
+            <table>
+
+
+                <thead>
+
+
+                    <tr>
+
+                        <th>
+                            Order ID
+                        </th>
+
+                        <th>
+                            Customer
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Delivery Person
+                        </th>
+
+                        <th>
+                            Assign
+                        </th>
+
+                    </tr>
+
+
+                </thead>
+
+
+                <tbody id="ordersTable">
+
+                    <!-- Orders loaded from database -->
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script src="admin-delivery.js"></script>
+
+</body>
+
+</html>

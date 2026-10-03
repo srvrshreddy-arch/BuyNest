@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BuyNest - Delivery Dashboard</title>
+
+    <link rel="stylesheet"
+          href="delivery dashboard.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            BuyNest
+        </div>
+
+        <p class="label">
+            DELIVERY PANEL
+        </p>
+
+
+        <a href="#"
+           id="myDeliveriesLink"
+           class="active">
+
+            🚚 My Deliveries
+
+        </a>
+
+
+        <a href="#"
+           id="assignedOrdersLink">
+
+            📦 Assigned Orders
+
+        </a>
+
+
+        <a href="#"
+           id="completedOrdersLink">
+
+            ✅ Completed Orders
+
+        </a>
+
+
+        <a href="welcome.html"
+           class="logout">
+
+            ↪ Logout
+
+        </a>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1 id="pageTitle">
+                    Delivery Dashboard
+                </h1>
+
+                <p id="pageSubtitle">
+                    Welcome back, Delivery Partner 👋
+                </p>
+
+            </div>
+
+
+            <div class="profile">
+
+                🚚 Delivery Person
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ================= STATISTICS ================= -->
+
+        <section class="stats">
+
+
+            <!-- ASSIGNED -->
+
+            <div class="stat-card">
+
+                <div class="icon">
+                    📦
+                </div>
+
+                <div>
+
+                    <p>
+                        Assigned Orders
+                    </p>
+
+                    <h2 id="assignedCount">
+                        0
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- OUT FOR DELIVERY -->
+
+            <div class="stat-card">
+
+                <div class="icon">
+                    🚚
+                </div>
+
+                <div>
+
+                    <p>
+                        Out for Delivery
+                    </p>
+
+                    <h2 id="outForDeliveryCount">
+                        0
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DELIVERED -->
+
+            <div class="stat-card">
+
+                <div class="icon">
+                    ✅
+                </div>
+
+                <div>
+
+                    <p>
+                        Delivered
+                    </p>
+
+                    <h2 id="deliveredCount">
+                        0
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ================= ORDERS ================= -->
+
+        <section class="orders-section">
+
+
+            <h2 id="ordersTitle">
+                My Assigned Orders
+            </h2>
+
+
+            <div class="orders-container">
+
+                <p style="text-align:center;">
+
+                    Loading orders...
+
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script src="delivery dashboard.js"></script>
+
+
+</body>
+
+</html>

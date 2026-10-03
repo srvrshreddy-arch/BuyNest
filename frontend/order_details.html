@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BuyNest - Order Details</title>
+
+    <link rel="stylesheet" href="order_details.css">
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="logo">
+        BuyNest
+    </div>
+
+    <nav>
+
+        <a href="home.html">
+            Home
+        </a>
+
+        <a href="products.html">
+            Products
+        </a>
+
+        <a href="categories.html">
+            Categories
+        </a>
+
+        <a href="orders.html" class="active">
+            Orders
+        </a>
+
+        <a href="cart.html">
+            Cart 🛒
+        </a>
+
+        <a href="customer-login.html">
+            Login
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= ORDER DETAILS ================= -->
+
+<section class="order-details-section">
+
+    <div class="page-heading">
+
+        <h1>
+            Order Details
+        </h1>
+
+        <p>
+            View your order information and products.
+        </p>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    <div id="loading">
+        Loading order details...
+    </div>
+
+
+    <!-- ERROR -->
+
+    <div id="errorMessage" style="display:none;">
+    </div>
+
+
+    <!-- ORDER DETAILS -->
+
+    <div id="orderDetails" style="display:none;">
+
+        <!-- ORDER INFORMATION -->
+
+        <div class="order-info">
+
+            <h2>
+                Order #<span id="orderId"></span>
+            </h2>
+
+            <p>
+                <strong>Customer:</strong>
+                <span id="customerName"></span>
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                <span id="customerEmail"></span>
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                <span id="customerPhone"></span>
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                <span id="orderStatus"></span>
+            </p>
+
+            <p>
+                <strong>Total Amount:</strong>
+                ₹<span id="totalAmount"></span>
+            </p>
+
+        </div>
+
+
+        <!-- ORDER ITEMS -->
+
+        <div class="items-section">
+
+            <h2>
+                Ordered Products
+            </h2>
+
+            <div id="orderItems"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <h2>
+        BuyNest
+    </h2>
+
+    <p>
+        Everything you need, all in one place.
+    </p>
+
+    <p>
+        © 2026 BuyNest. All Rights Reserved.
+    </p>
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="order_details.js"></script>
+
+</body>
+
+</html>

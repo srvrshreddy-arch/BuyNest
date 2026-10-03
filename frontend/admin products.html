@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        BuyNest - Manage Products
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="admin products.css">
+
+</head>
+
+<body>
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            BuyNest
+        </div>
+
+        <p class="admin-label">
+            ADMIN PANEL
+        </p>
+
+
+        <a href="admin dashboard.html">
+            📊 Dashboard
+        </a>
+
+
+        <a href="admin user.html">
+            👥 Users
+        </a>
+
+
+        <a
+            href="admin products.html"
+            class="active">
+
+            📦 Products
+
+        </a>
+
+
+        <a href="admin order.html">
+            🛒 Orders
+        </a>
+
+
+        <a href="admin-delivery.html">
+            🚚 Delivery
+        </a>
+
+
+        <a
+            href="welcome.html"
+            class="logout">
+
+            ↪ Logout
+
+        </a>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Manage Products
+                </h1>
+
+                <p>
+                    Add, update and delete products
+                </p>
+
+            </div>
+
+
+            <div class="admin-profile">
+                👨‍💼 Admin
+            </div>
+
+        </header>
+
+
+        <!-- ================= PRODUCT FORM ================= -->
+
+        <section class="product-form-section">
+
+            <h2 id="formTitle">
+                Add Product
+            </h2>
+
+
+            <form id="productForm">
+
+
+                <div class="form-grid">
+
+
+                    <!-- PRODUCT NAME -->
+
+                    <div>
+
+                        <label>
+                            Product Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            required>
+
+                    </div>
+
+
+                    <!-- PRICE -->
+
+                    <div>
+
+                        <label>
+                            Price
+                        </label>
+
+                        <input
+                            type="number"
+                            id="price"
+                            step="0.01"
+                            required>
+
+                    </div>
+
+
+                    <!-- QUANTITY -->
+
+                    <div>
+
+                        <label>
+                            Quantity
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            min="0"
+                            required>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div>
+
+                        <label>
+                            Category ID
+                        </label>
+
+                        <input
+                            type="number"
+                            id="categoryId"
+                            required>
+
+                    </div>
+
+
+                    <!-- IMAGE -->
+
+                    <div class="full-width">
+
+                        <label>
+                            Image URL
+                        </label>
+
+                        <input
+                            type="text"
+                            id="imageUrl">
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="full-width">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            required></textarea>
+
+                    </div>
+
+
+                    <!-- COLORS -->
+
+                    <div class="full-width">
+
+                        <label>
+                            Colors
+                        </label>
+
+                        <input
+                            type="text"
+                            id="colors"
+                            placeholder="Example: Black, White, Blue">
+
+                    </div>
+
+                </div>
+
+
+                <!-- SAVE -->
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                    id="saveButton">
+
+                    Add Product
+
+                </button>
+
+
+                <!-- CANCEL -->
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    id="cancelButton"
+                    onclick="cancelEdit()">
+
+                    Cancel
+
+                </button>
+
+
+            </form>
+
+        </section>
+
+
+        <!-- ================= ALL PRODUCTS ================= -->
+
+        <section class="products-section">
+
+
+            <div class="section-header">
+
+                <h2>
+                    All Products
+                </h2>
+
+
+                <button
+                    onclick="loadProducts()"
+                    class="refresh-btn">
+
+                    🔄 Refresh
+
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Image
+                            </th>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Price
+                            </th>
+
+                            <th>
+                                Quantity
+                            </th>
+
+                            <th>
+                                Description
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="productTableBody">
+
+                        <!-- Products loaded from database -->
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="admin products.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+/* Register Page */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f4f7;
+}
+
+/* Main heading */
+
+h1 {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 36px;
+}
+
+/* Register box */
+
+.register-container {
+    width: 400px;
+    margin: 30px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Register heading */
+
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Labels */
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+/* Input fields */
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* Input focus */
+
+input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Register button */
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Button hover */
+
+button:hover {
+    background: #0056b3;
+}
+
+/* Login text */
+
+p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Login link */
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BuyNest</title>
+</head>
+
+<body>
+
+<script>
+
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn === "true") {
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "customer-login.html";
+    }
+
+</script>
+
+</body>
+</html>

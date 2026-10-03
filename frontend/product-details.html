@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BuyNest - Product Details</title>
+
+    <link rel="stylesheet"
+          href="product-details.css">
+
+</head>
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="logo">
+        BuyNest
+    </div>
+
+    <nav>
+
+        <a href="home.html">
+            Home
+        </a>
+
+        <a href="products.html">
+            Products
+        </a>
+
+        <a href="cart.html">
+            Cart 🛒
+        </a>
+
+        <a href="customer-login.html">
+            Login
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= PRODUCT DETAILS ================= -->
+
+<main class="product-page">
+
+
+    <!-- ================= PRODUCT IMAGE ================= -->
+
+    <div class="product-image">
+
+        <div class="image-box"
+             id="productImage">
+
+            🛍️
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= PRODUCT INFORMATION ================= -->
+
+    <div class="product-info">
+
+
+        <!-- CATEGORY -->
+
+        <p class="category"
+           id="category">
+
+            Category
+
+        </p>
+
+
+        <!-- NAME -->
+
+        <h1 id="productName">
+
+            Loading...
+
+        </h1>
+
+
+        <!-- DESCRIPTION -->
+
+        <p class="description"
+           id="productDescription">
+
+            Loading product details...
+
+        </p>
+
+
+        <!-- PRICE -->
+
+        <div class="price"
+             id="productPrice">
+
+            ₹0
+
+        </div>
+
+
+        <!-- DELIVERY -->
+
+        <p class="delivery">
+
+            🚚 Free Delivery
+
+        </p>
+
+
+        <!-- AVAILABLE QUANTITY -->
+
+        <p id="productQuantity">
+
+            Available: 0
+
+        </p>
+
+
+        <!-- ================= QUANTITY ================= -->
+
+        <div class="quantity">
+
+            <label>
+                Quantity:
+            </label>
+
+
+            <button onclick="decreaseQuantity()">
+
+                -
+
+            </button>
+
+
+            <input
+                type="text"
+                id="quantity"
+                value="1"
+                readonly
+            >
+
+
+            <button onclick="increaseQuantity()">
+
+                +
+
+            </button>
+
+        </div>
+
+
+        <!-- ================= BUTTONS ================= -->
+
+        <div class="buttons">
+
+
+            <!-- ADD TO CART -->
+
+            <button
+                class="cart-btn"
+                id="cartButton">
+
+                🛒 Add to Cart
+
+            </button>
+
+
+            <!-- BUY NOW -->
+
+            <button
+                class="buy-btn"
+                id="buyButton">
+
+                Buy Now
+
+            </button>
+
+
+        </div>
+
+
+        <!-- ================= FEATURES ================= -->
+
+        <div class="features">
+
+
+            <div>
+
+                🔒
+
+                <span>
+                    Secure Payment
+                </span>
+
+            </div>
+
+
+            <div>
+
+                🚚
+
+                <span>
+                    Fast Delivery
+                </span>
+
+            </div>
+
+
+            <div>
+
+                ↩️
+
+                <span>
+                    Easy Returns
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- ================= PRODUCT DETAILS ================= -->
+
+<section class="details">
+
+
+    <h2>
+        Product Details
+    </h2>
+
+
+    <div class="details-grid">
+
+
+        <!-- PRODUCT ID -->
+
+        <div>
+
+            <strong>
+                Product ID
+            </strong>
+
+            <p id="productId">
+                -
+            </p>
+
+        </div>
+
+
+        <!-- CATEGORY -->
+
+        <div>
+
+            <strong>
+                Category
+            </strong>
+
+            <p id="productCategory">
+                -
+            </p>
+
+        </div>
+
+
+        <!-- PRICE -->
+
+        <div>
+
+            <strong>
+                Price
+            </strong>
+
+            <p id="detailsPrice">
+                -
+            </p>
+
+        </div>
+
+
+        <!-- QUANTITY -->
+
+        <div>
+
+            <strong>
+                Available Quantity
+            </strong>
+
+            <p id="detailsQuantity">
+                -
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <p>
+        © 2026 BuyNest. All Rights Reserved.
+    </p>
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="product-details.js"></script>
+
+</body>
+
+</html>

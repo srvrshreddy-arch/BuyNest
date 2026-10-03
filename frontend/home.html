@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BuyNest - Online Shopping</title>
+
+    <link rel="stylesheet" href="home.css">
+
+</head>
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="logo">
+        BuyNest
+    </div>
+
+
+    <nav>
+
+        <a href="home.html" class="active">
+            Home
+        </a>
+
+        <a href="products.html">
+            Products
+        </a>
+
+        <a href="categories.html">
+            Categories
+        </a>
+
+        <a href="orders.html">
+            Orders
+        </a>
+
+        <a href="cart.html">
+            Cart 🛒
+        </a>
+
+        <!-- Login / Logout will be changed by JavaScript -->
+        <a href="customer-login.html" id="authLink">
+            Login
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<!-- ================= HERO SECTION ================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <p class="welcome-text">
+            WELCOME TO BUYNEST
+        </p>
+
+
+        <h1>
+
+            Everything You Need,
+            <span>All in One Place</span>
+
+        </h1>
+
+
+        <p class="hero-description">
+
+            Discover fashion, electronics, home essentials,
+            beauty products, groceries and much more.
+
+        </p>
+
+
+        <a
+            href="products.html"
+            class="shop-button">
+
+            Shop Now →
+
+        </a>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<section class="categories">
+
+    <h2>
+        Shop By Category
+    </h2>
+
+
+    <p class="section-description">
+
+        Explore products from your favorite categories
+
+    </p>
+
+
+
+    <div class="category-container">
+
+
+        <div
+            class="category-card"
+            data-category-id="202">
+
+            <div class="category-icon">
+                👗
+            </div>
+
+            <h3>
+                Fashion
+            </h3>
+
+            <p>
+                Clothes and trendy fashion
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="203">
+
+            <div class="category-icon">
+                📱
+            </div>
+
+            <h3>
+                Electronics
+            </h3>
+
+            <p>
+                Gadgets and electronic products
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="204">
+
+            <div class="category-icon">
+                🏠
+            </div>
+
+            <h3>
+                Home & Kitchen
+            </h3>
+
+            <p>
+                Products for your home
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="205">
+
+            <div class="category-icon">
+                💄
+            </div>
+
+            <h3>
+                Beauty
+            </h3>
+
+            <p>
+                Beauty and personal care
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="206">
+
+            <div class="category-icon">
+                👟
+            </div>
+
+            <h3>
+                Footwear
+            </h3>
+
+            <p>
+                Shoes and footwear
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="207">
+
+            <div class="category-icon">
+                🧸
+            </div>
+
+            <h3>
+                Toys & Kids
+            </h3>
+
+            <p>
+                Fun products for kids
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="208">
+
+            <div class="category-icon">
+                📚
+            </div>
+
+            <h3>
+                Books
+            </h3>
+
+            <p>
+                Books and learning materials
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="209">
+
+            <div class="category-icon">
+                🛒
+            </div>
+
+            <h3>
+                Grocery
+            </h3>
+
+            <p>
+                Everyday grocery essentials
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="210">
+
+            <div class="category-icon">
+                🏋️
+            </div>
+
+            <h3>
+                Sports & Fitness
+            </h3>
+
+            <p>
+                Fitness and sports products
+            </p>
+
+        </div>
+
+
+
+        <div
+            class="category-card"
+            data-category-id="211">
+
+            <div class="category-icon">
+                🎒
+            </div>
+
+            <h3>
+                Accessories
+            </h3>
+
+            <p>
+                Bags, watches and accessories
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= FEATURED PRODUCTS ================= -->
+
+<section class="products">
+
+    <h2>
+        Featured Products
+    </h2>
+
+
+    <p class="section-description">
+
+        Popular products available at BuyNest
+
+    </p>
+
+
+    <div
+        class="product-container"
+        id="productContainer">
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= OFFER ================= -->
+
+<section class="offer">
+
+    <div>
+
+        <p class="offer-small">
+            SPECIAL OFFER
+        </p>
+
+
+        <h2>
+            Great Products. Great Prices.
+        </h2>
+
+
+        <p>
+            Find everything you need at BuyNest.
+        </p>
+
+
+        <a
+            href="products.html"
+            class="offer-button">
+
+            Explore Products
+
+        </a>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <h2>
+        BuyNest
+    </h2>
+
+
+    <p>
+        Everything you need, all in one place.
+    </p>
+
+
+    <div class="footer-links">
+
+        <a href="home.html">
+            Home
+        </a>
+
+        <a href="products.html">
+            Products
+        </a>
+
+        <a href="categories.html">
+            Categories
+        </a>
+
+        <a href="orders.html">
+            Orders
+        </a>
+
+        <a href="#">
+            About Us
+        </a>
+
+        <a href="#">
+            Contact
+        </a>
+
+    </div>
+
+
+    <p class="copyright">
+
+        © 2026 BuyNest. All Rights Reserved.
+
+    </p>
+
+</footer>
+
+
+
+<script src="home.js"></script>
+
+
+</body>
+
+</html>

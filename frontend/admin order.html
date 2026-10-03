@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>BuyNest - Admin Orders</title>
+
+    <link
+        rel="stylesheet"
+        href="admin order.css">
+
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            BuyNest
+        </div>
+
+        <p class="admin-label">
+            ADMIN PANEL
+        </p>
+
+        <a href="admin dashboard.html">
+            📊 Dashboard
+        </a>
+
+        <a href="admin user.html">
+            👥 Users
+        </a>
+
+        <a href="admin products.html">
+            📦 Products
+        </a>
+
+        <a
+            href="admin order.html"
+            class="active">
+            🛒 Orders
+        </a>
+
+        <a href="admin-delivery.html">
+            🚚 Delivery
+        </a>
+
+        <a
+            href="welcome.html"
+            class="logout">
+            ↪ Logout
+        </a>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Orders
+                </h1>
+
+                <p>
+                    View and manage customer orders
+                </p>
+
+            </div>
+
+            <div class="admin-profile">
+                👨‍💼 Admin
+            </div>
+
+        </header>
+
+
+        <!-- ================= TOTAL ORDERS ================= -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🛒
+                </div>
+
+                <div>
+
+                    <p>
+                        Total Orders
+                    </p>
+
+                    <h2 id="totalOrders">
+                        0
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ORDERS TABLE ================= -->
+
+        <section class="section">
+
+            <h2>
+                Customer Orders
+            </h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Order ID
+                            </th>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Delivery
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="ordersTableBody">
+
+                        <!-- Orders loaded from database -->
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="admin order.js"></script>
+
+</body>
+
+</html>
