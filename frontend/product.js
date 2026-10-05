@@ -1,26 +1,21 @@
-// =====================================================
-// API URLS
-// =====================================================
-
 const API_URL =
-    "http://localhost:8080/getProducts";
+    "https://buynest-qbzg.onrender.com/getProducts";
 
 const CATEGORY_API_URL =
-    "http://localhost:8080/getProductsByCategory";
+    "https://buynest-qbzg.onrender.com/getProductsByCategory";
 
 const CATEGORY_ALL_API_URL =
-    "http://localhost:8080/getCategories";
+    "https://buynest-qbzg.onrender.com/getCategories";
 
 const SAVE_CART_ITEM_API =
-    "http://localhost:8080/saveCartitem";
+    "https://buynest-qbzg.onrender.com/saveCartitem";
 
-
-// =====================================================
-// HTML ELEMENTS
-// =====================================================
 
 const productGrid =
     document.getElementById("productGrid");
+
+const categorySelect =
+    document.getElementById("categorySelect");
 
 const searchInput =
     document.getElementById("searchInput");
@@ -28,933 +23,508 @@ const searchInput =
 const searchButton =
     document.getElementById("searchButton");
 
-const categoryFilter =
-    document.getElementById("categoryFilter");
+const sortSelect =
+    document.getElementById("sortSelect");
 
-const sortFilter =
-    document.getElementById("sortFilter");
-
-
-// =====================================================
-// GET CATEGORY ID FROM URL
-// =====================================================
-
-const urlParams =
-    new URLSearchParams(
-        window.location.search
-    );
-
-const categoryIdFromUrl =
-    urlParams.get("categoryId");
-
-console.log(
-    "Category ID from URL:",
-    categoryIdFromUrl
-);
-
-
-// =====================================================
-// PRODUCTS ARRAY
-// =====================================================
 
 let allProducts = [];
 
 
-// =====================================================
+// ===============================
 // LOAD PRODUCTS
-// =====================================================
+// ===============================
 
 async function loadProducts() {
 
     try {
 
+        const urlParams =
+            new URLSearchParams(window.location.search);
+
+        const categoryId =
+            urlParams.get("categoryId");
+
         let response;
 
+        if (categoryId) {
 
-        // =================================================
-        // CATEGORY PRODUCTS
-        // =================================================
-
-        if (categoryIdFromUrl) {
-
-            console.log(
-                "Loading products for category:",
-                categoryIdFromUrl
+            response = await fetch(
+                CATEGORY_API_URL + "/" + categoryId
             );
 
+        } else {
 
-            response =
-                await fetch(
-                    CATEGORY_API_URL +
-                    "/" +
-                    categoryIdFromUrl
-                );
-
+            response = await fetch(API_URL);
         }
-
-
-        // =================================================
-        // ALL PRODUCTS
-        // =================================================
-
-        else {
-
-            console.log(
-                "Loading all products"
-            );
-
-
-            response =
-                await fetch(
-                    API_URL
-                );
-
-        }
-
-
-        // =================================================
-        // CHECK RESPONSE
-        // =================================================
 
         if (!response.ok) {
-
-            throw new Error(
-                "Failed to fetch products. Status: " +
-                response.status
-            );
-
+            throw new Error("Failed to fetch products");
         }
-
-
-        // =================================================
-        // GET JSON
-        // =================================================
 
         const result =
             await response.json();
 
+        console.log("Products received:", result);
 
-        console.log(
-            "Products API response:",
-            result
-        );
+        if (Array.isArray(result)) {
 
+            allProducts = result;
 
-        // =================================================
-        // HANDLE RESPONSE
-        // =================================================
+        } else if (Array.isArray(result.data)) {
 
-        if (
-            Array.isArray(result)
-        ) {
+            allProducts = result.data;
 
-            allProducts =
-                result;
-
-        }
-
-        else if (
-            result.data &&
-            Array.isArray(result.data)
-        ) {
-
-            allProducts =
-                result.data;
-
-        }
-
-        else {
+        } else {
 
             allProducts = [];
-
         }
 
+        displayProducts(allProducts);
 
-        console.log(
-            "Products loaded:",
-            allProducts
-        );
-
-
-        // =================================================
-        // LOAD CATEGORIES
-        // =================================================
-
-        await loadCategories();
-
-
-        // =================================================
-        // DISPLAY PRODUCTS
-        // =================================================
-
-        displayProducts();
-
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "Error loading products:",
             error
         );
 
-
         productGrid.innerHTML = `
-
             <p style="
                 text-align:center;
                 grid-column:1/-1;
                 color:red;
                 font-size:18px;
             ">
-
                 Unable to load products.
-
             </p>
-
         `;
-
     }
-
 }
 
 
-// =====================================================
+// ===============================
 // LOAD CATEGORIES
-// =====================================================
+// ===============================
 
 async function loadCategories() {
 
     try {
 
         const response =
-            await fetch(
-                CATEGORY_ALL_API_URL
-            );
-
+            await fetch(CATEGORY_ALL_API_URL);
 
         if (!response.ok) {
-
             throw new Error(
-                "Failed to load categories"
+                "Failed to fetch categories"
             );
-
         }
-
 
         const result =
             await response.json();
 
-
         console.log(
-            "Categories response:",
+            "Categories received:",
             result
         );
 
-
-        let categories = [];
-
-
-        // =================================================
-        // HANDLE RESPONSE
-        // =================================================
-
-        if (
+        const categories =
             Array.isArray(result)
-        ) {
+                ? result
+                : result.data;
 
-            categories =
-                result;
+        if (!categories) return;
 
-        }
+        if (categorySelect) {
 
-        else if (
-            result.data &&
-            Array.isArray(result.data)
-        ) {
+            categorySelect.innerHTML =
+                `<option value="">All Categories</option>`;
 
-            categories =
-                result.data;
-
-        }
-
-
-        // =================================================
-        // CLEAR DROPDOWN
-        // =================================================
-
-        categoryFilter.innerHTML = `
-
-            <option value="">
-                All Categories
-            </option>
-
-        `;
-
-
-        // =================================================
-        // ADD CATEGORIES
-        // =================================================
-
-        categories.forEach(
-            category => {
+            categories.forEach(category => {
 
                 const option =
-                    document.createElement(
-                        "option"
-                    );
-
+                    document.createElement("option");
 
                 option.value =
-                    category.name;
-
+                    category.id;
 
                 option.textContent =
                     category.name;
 
+                categorySelect.appendChild(option);
+            });
+        }
 
-                // =================================================
-                // SELECT CURRENT CATEGORY
-                // =================================================
-
-                if (
-                    categoryIdFromUrl &&
-                    String(category.id) ===
-                    String(categoryIdFromUrl)
-                ) {
-
-                    option.selected =
-                        true;
-
-                }
-
-
-                categoryFilter.appendChild(
-                    option
-                );
-
-            }
-        );
-
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "Error loading categories:",
             error
         );
-
     }
-
 }
 
 
-// =====================================================
+// ===============================
 // DISPLAY PRODUCTS
-// =====================================================
+// ===============================
 
-function displayProducts() {
+function displayProducts(products) {
 
-    let products =
-        [...allProducts];
+    if (!productGrid) return;
 
+    productGrid.innerHTML = "";
 
-    // =================================================
-    // SEARCH
-    // =================================================
-
-    const searchText =
-        searchInput.value
-            .trim()
-            .toLowerCase();
-
-
-    if (searchText) {
-
-        products =
-            products.filter(
-                product => {
-
-                    return (
-
-                        product.name &&
-                        product.name
-                            .toLowerCase()
-                            .includes(
-                                searchText
-                            )
-
-                    );
-
-                }
-            );
-
-    }
-
-
-    // =================================================
-    // SORT
-    // =================================================
-
-    const sortValue =
-        sortFilter.value;
-
-
-    // =================================================
-    // PRICE LOW TO HIGH
-    // =================================================
-
-    if (
-        sortValue === "priceLow"
-    ) {
-
-        products.sort(
-            (a, b) =>
-                Number(a.price) -
-                Number(b.price)
-        );
-
-    }
-
-
-    // =================================================
-    // PRICE HIGH TO LOW
-    // =================================================
-
-    if (
-        sortValue === "priceHigh"
-    ) {
-
-        products.sort(
-            (a, b) =>
-                Number(b.price) -
-                Number(a.price)
-        );
-
-    }
-
-
-    // =================================================
-    // NAME A-Z
-    // =================================================
-
-    if (
-        sortValue === "nameAZ"
-    ) {
-
-        products.sort(
-            (a, b) =>
-                a.name.localeCompare(
-                    b.name
-                )
-        );
-
-    }
-
-
-    // =================================================
-    // NAME Z-A
-    // =================================================
-
-    if (
-        sortValue === "nameZA"
-    ) {
-
-        products.sort(
-            (a, b) =>
-                b.name.localeCompare(
-                    a.name
-                )
-        );
-
-    }
-
-
-    // =================================================
-    // NO PRODUCTS
-    // =================================================
-
-    if (
-        !products ||
-        products.length === 0
-    ) {
+    if (!products || products.length === 0) {
 
         productGrid.innerHTML = `
-
             <p style="
                 text-align:center;
                 grid-column:1/-1;
                 font-size:18px;
-                color:#333;
             ">
-
                 No products found.
-
             </p>
-
         `;
 
         return;
-
     }
 
 
-    // =================================================
-    // CLEAR PRODUCT GRID
-    // =================================================
+    products.forEach(product => {
 
-    productGrid.innerHTML = "";
+        const card =
+            document.createElement("div");
 
-
-    // =================================================
-    // CREATE PRODUCT CARDS
-    // =================================================
-
-    products.forEach(
-        product => {
-
-            const card =
-                document.createElement(
-                    "div"
-                );
+        card.className =
+            "product-card";
 
 
-            card.className =
-                "product-card";
+        card.innerHTML = `
+            <img
+                src="${product.imageUrl || product.image || ""}"
+                alt="${product.name || "Product"}"
+                onerror="this.src='https://via.placeholder.com/300x250?text=No+Image'"
+            >
+
+            <h3>
+                ${product.name || "Product"}
+            </h3>
+
+            <p>
+                ${product.description || ""}
+            </p>
+
+            <h4>
+                ₹${product.price || 0}
+            </h4>
+
+            <button class="add-cart-btn">
+                Add to Cart
+            </button>
+        `;
 
 
-            card.innerHTML = `
+        // Open product details
+        card.addEventListener(
+            "click",
+            function (event) {
 
-                <div class="product-image">
-
-                    <img
-                        src="${product.imageUrl}"
-                        alt="${product.name}"
-                        onerror="
-                            this.onerror=null;
-                            this.src='https://via.placeholder.com/300x210?text=No+Image';
-                        "
-                    >
-
-                </div>
-
-
-                <span class="category">
-
-                    ${
-                        product.category
-                            ? product.category.name
-                            : "Product"
-                    }
-
-                </span>
-
-
-                <h2>
-                    ${product.name}
-                </h2>
-
-
-                <p>
-                    ${product.description}
-                </p>
-
-
-                <div class="product-bottom">
-
-                    <span class="price">
-                        ₹${Number(product.price).toLocaleString("en-IN")}
-                    </span>
-
-                    <span class="rating">
-                        ⭐ 4.5
-                    </span>
-
-                </div>
-
-
-                <button
-                    class="cart-button"
-                    onclick="
-                        event.stopPropagation();
-                        addToCart(${product.id});
-                    "
-                >
-
-                    🛒 Add to Cart
-
-                </button>
-
-            `;
-
-
-            // =================================================
-            // CLICK PRODUCT CARD
-            // =================================================
-
-            card.addEventListener(
-                "click",
-                function () {
-
-                    window.location.href =
-                        "product-details.html?id=" +
-                        product.id;
-
+                if (
+                    event.target.classList.contains(
+                        "add-cart-btn"
+                    )
+                ) {
+                    return;
                 }
-            );
+
+                window.location.href =
+                    "product-details.html?id=" +
+                    product.id;
+            }
+        );
 
 
-            // =================================================
-            // ADD CARD TO GRID
-            // =================================================
+        // Add to cart
+        const addButton =
+            card.querySelector(".add-cart-btn");
 
-            productGrid.appendChild(
-                card
-            );
 
-        }
-    );
+        addButton.addEventListener(
+            "click",
+            function (event) {
 
+                event.stopPropagation();
+
+                addToCart(product);
+            }
+        );
+
+
+        productGrid.appendChild(card);
+    });
 }
 
 
-// =====================================================
-// CATEGORY CHANGE
-// =====================================================
-
-categoryFilter.addEventListener(
-    "change",
-    async function () {
-
-        const selectedCategory =
-            categoryFilter.value;
-
-
-        // =================================================
-        // ALL CATEGORIES
-        // =================================================
-
-        if (
-            selectedCategory === ""
-        ) {
-
-            window.location.href =
-                "products.html";
-
-            return;
-
-        }
-
-
-        // =================================================
-        // GET CATEGORY ID
-        // =================================================
-
-        try {
-
-            const response =
-                await fetch(
-                    CATEGORY_ALL_API_URL
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to get categories"
-                );
-
-            }
-
-
-            const result =
-                await response.json();
-
-
-            let categories = [];
-
-
-            if (
-                Array.isArray(result)
-            ) {
-
-                categories =
-                    result;
-
-            }
-
-            else if (
-                result.data &&
-                Array.isArray(result.data)
-            ) {
-
-                categories =
-                    result.data;
-
-            }
-
-
-            // =================================================
-            // FIND SELECTED CATEGORY
-            // =================================================
-
-            const selected =
-                categories.find(
-                    category =>
-                        category.name ===
-                        selectedCategory
-                );
-
-
-            // =================================================
-            // OPEN CATEGORY PAGE
-            // =================================================
-
-            if (selected) {
-
-                window.location.href =
-                    "products.html?categoryId=" +
-                    selected.id;
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Category error:",
-                error
-            );
-
-        }
-
-    }
-);
-
-
-// =====================================================
-// SEARCH BUTTON
-// =====================================================
-
-searchButton.addEventListener(
-    "click",
-    function () {
-
-        displayProducts();
-
-    }
-);
-
-
-// =====================================================
-// SEARCH ENTER
-// =====================================================
-
-searchInput.addEventListener(
-    "keyup",
-    function (event) {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            displayProducts();
-
-        }
-
-    }
-);
-
-
-// =====================================================
-// SORT
-// =====================================================
-
-sortFilter.addEventListener(
-    "change",
-    function () {
-
-        displayProducts();
-
-    }
-);
-
-
-// =====================================================
+// ===============================
 // ADD TO CART
-// =====================================================
+// ===============================
 
-async function addToCart(
-    productId
-) {
+async function addToCart(product) {
+
+    const userId =
+        Number(
+            localStorage.getItem("userId")
+        );
+
+
+    if (!userId) {
+
+        alert(
+            "Please login to add products to cart."
+        );
+
+        window.location.href =
+            "customer-login.html";
+
+        return;
+    }
+
+
+    const cartItem = {
+
+        user: {
+            id: userId
+        },
+
+        product: {
+            id: product.id
+        },
+
+        quantity: 1
+    };
+
 
     try {
-
-        console.log(
-            "Adding product to cart:",
-            productId
-        );
-
-
-        // =================================================
-        // GET LOGGED-IN USER ID
-        // =================================================
-
-        const currentUserId =
-            Number(
-                localStorage.getItem(
-                    "userId"
-                )
-            );
-
-
-        console.log(
-            "Logged-in User ID:",
-            currentUserId
-        );
-
-
-        // =================================================
-        // CHECK LOGIN
-        // =================================================
-
-        if (!currentUserId) {
-
-            alert(
-                "Please login first."
-            );
-
-
-            window.location.href =
-                "customer-login.html";
-
-
-            return;
-
-        }
-
-
-        // =================================================
-        // CREATE CART ITEM
-        // =================================================
-
-        const cartItem = {
-
-            quantity: 1,
-
-            userId:
-                currentUserId,
-
-            productId:
-                Number(productId)
-
-        };
-
-
-        console.log(
-            "Cart item being sent:",
-            cartItem
-        );
-
-
-        // =================================================
-        // SAVE CART ITEM
-        // =================================================
 
         const response =
             await fetch(
                 SAVE_CART_ITEM_API,
                 {
-
-                    method:
-                        "POST",
+                    method: "POST",
 
                     headers: {
-
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
-                        JSON.stringify(
-                            cartItem
-                        )
-
+                        JSON.stringify(cartItem)
                 }
             );
 
-
-        // =================================================
-        // CHECK RESPONSE
-        // =================================================
-
-        if (!response.ok) {
-
-            const errorText =
-                await response.text();
-
-
-            console.error(
-                "Server error:",
-                errorText
-            );
-
-
-            throw new Error(
-                errorText ||
-                "Failed to add product to cart"
-            );
-
-        }
-
-
-        // =================================================
-        // GET RESPONSE
-        // =================================================
 
         const result =
             await response.json();
 
 
         console.log(
-            "Cart item saved:",
+            "Cart response:",
             result
         );
 
 
-        // =================================================
-        // SUCCESS MESSAGE
-        // =================================================
+        if (!response.ok) {
+
+            throw new Error(
+                result.message ||
+                "Unable to add product to cart"
+            );
+        }
+
 
         alert(
             "Product added to cart successfully!"
         );
 
-    }
 
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Add to cart error:",
+            "Error adding to cart:",
             error
         );
 
-
         alert(
-            "Unable to add product to cart.\n\n" +
-            error.message
+            "Unable to add product to cart."
         );
-
     }
-
 }
 
 
-// =====================================================
-// LOAD PRODUCTS WHEN PAGE OPENS
-// =====================================================
+// ===============================
+// CATEGORY FILTER
+// ===============================
 
+if (categorySelect) {
+
+    categorySelect.addEventListener(
+        "change",
+        function () {
+
+            const categoryId =
+                this.value;
+
+
+            if (categoryId) {
+
+                window.location.href =
+                    "products.html?categoryId=" +
+                    categoryId;
+
+            } else {
+
+                window.location.href =
+                    "products.html";
+            }
+        }
+    );
+}
+
+
+// ===============================
+// SEARCH PRODUCTS
+// ===============================
+
+function searchProducts() {
+
+    const searchText =
+        searchInput
+            ? searchInput.value
+                .toLowerCase()
+                .trim()
+            : "";
+
+
+    const filteredProducts =
+        allProducts.filter(product => {
+
+            const name =
+                (product.name || "")
+                    .toLowerCase();
+
+            const description =
+                (product.description || "")
+                    .toLowerCase();
+
+
+            return (
+                name.includes(searchText) ||
+                description.includes(searchText)
+            );
+        });
+
+
+    displayProducts(filteredProducts);
+}
+
+
+if (searchButton) {
+
+    searchButton.addEventListener(
+        "click",
+        searchProducts
+    );
+}
+
+
+if (searchInput) {
+
+    searchInput.addEventListener(
+        "keypress",
+        function (event) {
+
+            if (event.key === "Enter") {
+
+                searchProducts();
+            }
+        }
+    );
+}
+
+
+// ===============================
+// SORT PRODUCTS
+// ===============================
+
+if (sortSelect) {
+
+    sortSelect.addEventListener(
+        "change",
+        function () {
+
+            const sortValue =
+                this.value;
+
+
+            let sortedProducts =
+                [...allProducts];
+
+
+            if (sortValue === "priceLow") {
+
+                sortedProducts.sort(
+                    (a, b) =>
+                        Number(a.price) -
+                        Number(b.price)
+                );
+
+            } else if (
+                sortValue === "priceHigh"
+            ) {
+
+                sortedProducts.sort(
+                    (a, b) =>
+                        Number(b.price) -
+                        Number(a.price)
+                );
+
+            } else if (
+                sortValue === "nameAZ"
+            ) {
+
+                sortedProducts.sort(
+                    (a, b) =>
+                        (a.name || "")
+                            .localeCompare(
+                                b.name || ""
+                            )
+                );
+
+            } else if (
+                sortValue === "nameZA"
+            ) {
+
+                sortedProducts.sort(
+                    (a, b) =>
+                        (b.name || "")
+                            .localeCompare(
+                                a.name || ""
+                            )
+                );
+            }
+
+
+            displayProducts(
+                sortedProducts
+            );
+        }
+    );
+}
+
+
+// ===============================
+// INITIAL LOAD
+// ===============================
+
+loadCategories();
 loadProducts();
