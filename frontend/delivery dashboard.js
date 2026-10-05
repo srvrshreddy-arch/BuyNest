@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://buynest-qbzg.onrender.com";
 
 // =====================================================
 // GET LOGGED-IN DELIVERY PERSON
