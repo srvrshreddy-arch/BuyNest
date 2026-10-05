@@ -1,22 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>BuyNest</title>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Welcome to BuyNest</title>
+
+    <link rel="stylesheet"
+          href="welcome.css">
+
 </head>
 
 <body>
 
-<script>
+    <div class="welcome-container">
 
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
+        <div class="welcome-content">
 
-    if (isLoggedIn === "true") {
-        window.location.href = "home.html";
-    } else {
-        window.location.href = "customer-login.html";
-    }
+            <div class="logo">
+                BuyNest
+            </div>
 
-</script>
+            <h1>
+                Welcome to BuyNest 🛍️
+            </h1>
+
+            <p class="tagline">
+                Everything you need, all in one place.
+            </p>
+
+            <p class="description">
+                Shop your favorite products, manage your orders,
+                and enjoy a simple and convenient shopping experience.
+            </p>
+
+            <h2>
+                Login as
+            </h2>
+
+            <div class="login-options">
+
+                <a href="customer-login.html"
+                   class="login-card customer">
+
+                    <div class="icon">
+                        👤
+                    </div>
+
+                    <h3>
+                        Customer
+                    </h3>
+
+                    <p>
+                        Shop products and manage your orders
+                    </p>
+
+                    <span>
+                        Login as Customer →
+                    </span>
+
+                </a>
+
+
+                <a href="admin-login.html"
+                   class="login-card admin">
+
+                    <div class="icon">
+                        👨‍💼
+                    </div>
+
+                    <h3>
+                        Admin
+                    </h3>
+
+                    <p>
+                        Manage products, orders and customers
+                    </p>
+
+                    <span>
+                        Login as Admin →
+                    </span>
+
+                </a>
+
+
+                <a href="delivery-login.html"
+                   class="login-card delivery">
+
+                    <div class="icon">
+                        🚚
+                    </div>
+
+                    <h3>
+                        Delivery Person
+                    </h3>
+
+                    <p>
+                        Manage assigned orders and deliveries
+                    </p>
+
+                    <span>
+                        Login as Delivery Person →
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        © 2026 BuyNest. All Rights Reserved.
+
+    </footer>
 
 </body>
+
 </html>
