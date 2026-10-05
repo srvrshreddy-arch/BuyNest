@@ -2,7 +2,8 @@
 // API URLS
 // =====================================================
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL =
+    "https://buynest-qbzg.onrender.com";
 
 const SAVE_ORDER_API =
     `${BASE_URL}/saveorder`;
@@ -16,7 +17,9 @@ const SAVE_ORDERITEM_API =
 // =====================================================
 
 const CURRENT_USER_ID =
-    Number(localStorage.getItem("userId"));
+    Number(
+        localStorage.getItem("userId")
+    );
 
 
 // =====================================================
@@ -56,7 +59,7 @@ async function loadCheckout() {
 
 
         // =================================================
-        // GET ONLY CURRENT USER'S CART ITEMS
+        // GET CURRENT USER CART ITEMS
         // =================================================
 
         const response =
@@ -115,9 +118,9 @@ async function loadCheckout() {
 
             document.getElementById(
                 "checkoutItems"
-            ).innerHTML =
-
-                `<p>Your cart is empty.</p>`;
+            ).innerHTML = `
+                <p>Your cart is empty.</p>
+            `;
 
             totalAmount = 0;
 
@@ -189,7 +192,6 @@ async function loadCheckout() {
 
     }
 
-
     catch (error) {
 
         console.error(
@@ -198,13 +200,21 @@ async function loadCheckout() {
         );
 
 
-        document.getElementById(
-            "checkoutItems"
-        ).innerHTML =
+        const checkoutItems =
+            document.getElementById(
+                "checkoutItems"
+            );
 
-            `<p>
-                Unable to load cart items.
-            </p>`;
+
+        if (checkoutItems) {
+
+            checkoutItems.innerHTML = `
+                <p>
+                    Unable to load cart items.
+                </p>
+            `;
+
+        }
 
     }
 
@@ -221,6 +231,11 @@ function displayCheckoutItems() {
         document.getElementById(
             "checkoutItems"
         );
+
+
+    if (!container) {
+        return;
+    }
 
 
     container.innerHTML = "";

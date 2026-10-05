@@ -1,9 +1,9 @@
 // =====================================================
-// API URL
+// ORDERS API
 // =====================================================
 
 const ORDERS_API =
-    "http://localhost:8080/getorders";
+    "https://buynest-qbzg.onrender.com/getorders";
 
 
 // =====================================================
@@ -11,7 +11,9 @@ const ORDERS_API =
 // =====================================================
 
 const CURRENT_USER_ID =
-    Number(localStorage.getItem("userId"));
+    Number(
+        localStorage.getItem("userId")
+    );
 
 
 // =====================================================
@@ -19,7 +21,9 @@ const CURRENT_USER_ID =
 // =====================================================
 
 const ordersContainer =
-    document.getElementById("ordersContainer");
+    document.getElementById(
+        "ordersContainer"
+    );
 
 
 // =====================================================
@@ -28,7 +32,9 @@ const ordersContainer =
 
 if (!CURRENT_USER_ID) {
 
-    alert("Please login first.");
+    alert(
+        "Please login first."
+    );
 
     window.location.href =
         "customer-login.html";
@@ -43,40 +49,11 @@ async function loadOrders() {
 
     try {
 
-        // =================================================
-        // SHOW LOADING
-        // =================================================
-
-        ordersContainer.innerHTML = `
-
-            <div class="loading">
-
-                Loading your orders...
-
-            </div>
-
-        `;
-
-
-        console.log(
-            "Logged-in User ID:",
-            CURRENT_USER_ID
-        );
-
-
-        // =================================================
-        // FETCH ALL ORDERS
-        // =================================================
-
         const response =
             await fetch(
                 ORDERS_API
             );
 
-
-        // =================================================
-        // CHECK RESPONSE
-        // =================================================
 
         if (!response.ok) {
 
@@ -88,16 +65,12 @@ async function loadOrders() {
         }
 
 
-        // =================================================
-        // GET JSON
-        // =================================================
-
         const result =
             await response.json();
 
 
         console.log(
-            "Orders API response:",
+            "Orders received:",
             result
         );
 
@@ -106,42 +79,13 @@ async function loadOrders() {
         // GET ORDERS ARRAY
         // =================================================
 
-        let orders = [];
+        const orders =
+            Array.isArray(result)
+                ? result
+                : result.data;
 
 
-        // -------------------------------------------------
-        // CASE 1: DIRECT ARRAY
-        // -------------------------------------------------
-
-        if (Array.isArray(result)) {
-
-            orders =
-                result;
-
-        }
-
-
-        // -------------------------------------------------
-        // CASE 2: RESPONSE STRUCTURE
-        // { data: [...] }
-        // -------------------------------------------------
-
-        else if (
-            result.data &&
-            Array.isArray(result.data)
-        ) {
-
-            orders =
-                result.data;
-
-        }
-
-
-        // -------------------------------------------------
-        // INVALID RESPONSE
-        // -------------------------------------------------
-
-        else {
+        if (!Array.isArray(orders)) {
 
             throw new Error(
                 "Invalid orders response"
@@ -150,23 +94,19 @@ async function loadOrders() {
         }
 
 
-        console.log(
-            "All Orders:",
-            orders
-        );
-
-
         // =================================================
-        // FILTER CURRENT USER'S ORDERS
+        // FILTER CURRENT USER ORDERS
         // =================================================
 
-        orders =
+        const userOrders =
             orders.filter(
                 order => {
 
                     return (
                         order.user &&
-                        Number(order.user.id) ===
+                        Number(
+                            order.user.id
+                        ) ===
                         CURRENT_USER_ID
                     );
 
@@ -175,60 +115,45 @@ async function loadOrders() {
 
 
         console.log(
-            "Current User Orders:",
-            orders
+            "Current user's orders:",
+            userOrders
         );
 
 
         // =================================================
-        // NO ORDERS
-        // =================================================
-
-        if (
-            orders.length === 0
-        ) {
-
-            showNoOrders();
-
-            return;
-
-        }
-
-
-        // =================================================
-        // DISPLAY ORDERS
+        // DISPLAY
         // =================================================
 
         displayOrders(
-            orders
+            userOrders
         );
 
-    }
 
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Orders loading error:",
+            "Error loading orders:",
             error
         );
 
 
-        ordersContainer.innerHTML = `
+        if (ordersContainer) {
 
-            <div class="error-message">
+            ordersContainer.innerHTML = `
 
-                <h3>
-                    Unable to load orders
-                </h3>
+                <p style="
+                    text-align:center;
+                    color:red;
+                    font-size:18px;
+                ">
 
-                <p>
-                    ${error.message}
+                    Unable to load orders.
+
                 </p>
 
-            </div>
+            `;
 
-        `;
+        }
 
     }
 
@@ -243,23 +168,61 @@ function displayOrders(
     orders
 ) {
 
+    if (!ordersContainer) {
+
+        console.error(
+            "Orders container not found"
+        );
+
+        return;
+
+    }
+
+
+    ordersContainer.innerHTML =
+        "";
+
+
     // =================================================
-    // CLEAR CONTAINER
+    // NO ORDERS
     // =================================================
 
-    ordersContainer.innerHTML = "";
+    if (
+        !orders ||
+        orders.length === 0
+    ) {
+
+        ordersContainer.innerHTML = `
+
+            <div style="
+                text-align:center;
+                padding:40px;
+            ">
+
+                <h2>
+                    No Orders Found
+                </h2>
+
+                <p>
+                    You have not placed any
+                    orders yet.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
 
 
     // =================================================
-    // LOOP THROUGH ORDERS
+    // DISPLAY EACH ORDER
     // =================================================
 
     orders.forEach(
         order => {
-
-            // =============================================
-            // CREATE ORDER CARD
-            // =============================================
 
             const orderCard =
                 document.createElement(
@@ -271,43 +234,37 @@ function displayOrders(
                 "order-card";
 
 
-            // =============================================
-            // ORDER STATUS
-            // =============================================
+            // =================================================
+            // STATUS
+            // =================================================
 
             const status =
                 order.status ||
-                "UNKNOWN";
+                "PLACED";
 
 
             const statusClass =
-                getStatusClass(
-                    status
-                );
+                String(status)
+                    .toLowerCase()
+                    .replace(
+                        /\s+/g,
+                        "-"
+                    );
 
 
-            // =============================================
+            // =================================================
             // USER NAME
-            // =============================================
+            // =================================================
 
-            let userName =
+            const userName =
+                order.user?.name ||
+                order.user?.username ||
                 "Customer";
 
 
-            if (
-                order.user &&
-                order.user.name
-            ) {
-
-                userName =
-                    order.user.name;
-
-            }
-
-
-            // =============================================
-            // TOTAL AMOUNT
-            // =============================================
+            // =================================================
+            // TOTAL
+            // =================================================
 
             const totalAmount =
                 Number(
@@ -315,98 +272,68 @@ function displayOrders(
                 );
 
 
-            // =============================================
-            // CREATE ORDER CARD HTML
-            // =============================================
+            // =================================================
+            // ORDER CARD
+            // =================================================
 
             orderCard.innerHTML = `
 
-                <div class="order-top">
+                <div class="order-header">
 
-                    <div class="order-id">
-
+                    <h3>
                         Order #${order.id}
+                    </h3>
 
-                    </div>
-
-
-                    <div class="
-                        order-status
-                        ${statusClass}
-                    ">
-
+                    <span
+                        class="order-status ${statusClass}"
+                    >
                         ${status}
-
-                    </div>
-
-                </div>
-
-
-                <div class="order-info">
-
-
-                    <div class="info-box">
-
-                        <p>
-                            Customer
-                        </p>
-
-                        <strong>
-                            ${userName}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="info-box">
-
-                        <p>
-                            Total Amount
-                        </p>
-
-                        <strong>
-
-                            ₹${totalAmount.toLocaleString("en-IN")}
-
-                        </strong>
-
-                    </div>
-
-
-                    <div class="info-box">
-
-                        <p>
-                            Order Status
-                        </p>
-
-                        <strong>
-                            ${status}
-                        </strong>
-
-                    </div>
-
+                    </span>
 
                 </div>
 
 
-                <div class="order-bottom">
+                <div class="order-details">
 
-                    <button
-                        class="view-button"
-                        onclick="viewOrder(${order.id})">
+                    <p>
 
-                        View Order
+                        <strong>
+                            User:
+                        </strong>
 
-                    </button>
+                        ${userName}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Total Amount:
+                        </strong>
+
+                        ₹${totalAmount}
+
+                    </p>
 
                 </div>
+
+
+                <button
+                    class="view-order-btn"
+                    onclick="
+                        viewOrder(
+                            ${order.id}
+                        )
+                    "
+                >
+
+                    View Order
+
+                </button>
 
             `;
 
-
-            // =============================================
-            // ADD CARD TO PAGE
-            // =============================================
 
             ordersContainer.appendChild(
                 orderCard
@@ -419,73 +346,12 @@ function displayOrders(
 
 
 // =====================================================
-// GET STATUS CSS CLASS
-// =====================================================
-
-function getStatusClass(
-    status
-) {
-
-    const statusUpper =
-        String(
-            status
-        ).toUpperCase();
-
-
-    if (
-        statusUpper === "PLACED"
-    ) {
-
-        return "status-placed";
-
-    }
-
-
-    if (
-        statusUpper === "PROCESSING"
-    ) {
-
-        return "status-processing";
-
-    }
-
-
-    if (
-        statusUpper === "SHIPPED"
-    ) {
-
-        return "status-shipped";
-
-    }
-
-
-    if (
-        statusUpper === "DELIVERED"
-    ) {
-
-        return "status-delivered";
-
-    }
-
-
-    return "status-default";
-
-}
-
-
-// =====================================================
 // VIEW ORDER
 // =====================================================
 
 function viewOrder(
     orderId
 ) {
-
-    console.log(
-        "Opening order:",
-        orderId
-    );
-
 
     window.location.href =
         "order_details.html?id=" +
@@ -495,40 +361,7 @@ function viewOrder(
 
 
 // =====================================================
-// SHOW NO ORDERS
-// =====================================================
-
-function showNoOrders() {
-
-    ordersContainer.innerHTML = `
-
-        <div class="no-orders">
-
-            <h2>
-                No Orders Found
-            </h2>
-
-            <p>
-                You have not placed any orders yet.
-            </p>
-
-
-            <a
-                href="products.html">
-
-                Continue Shopping
-
-            </a>
-
-        </div>
-
-    `;
-
-}
-
-
-// =====================================================
-// LOAD ORDERS WHEN PAGE OPENS
+// INITIAL LOAD
 // =====================================================
 
 loadOrders();
