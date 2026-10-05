@@ -1,11 +1,23 @@
+// ===============================
+// USER
+// ===============================
+
 const USER_ID =
     Number(
         localStorage.getItem("userId")
     );
 
 
+// ===============================
+// API
+// ===============================
+
+const BASE_URL =
+    "https://buynest-qbzg.onrender.com";
+
 const CART_ITEMS_API =
-    "https://buynest-qbzg.onrender.com/getCartitems/" +
+    BASE_URL +
+    "/getCartitems/" +
     USER_ID;
 
 
@@ -60,7 +72,9 @@ async function loadCart() {
                 : result.data;
 
 
-        displayCart(cartItems || []);
+        displayCart(
+            cartItems || []
+        );
 
 
     } catch (error) {
@@ -73,7 +87,7 @@ async function loadCart() {
 
         const cartContainer =
             document.getElementById(
-                "cartContainer"
+                "cartItems"
             );
 
 
@@ -105,15 +119,26 @@ function displayCart(cartItems) {
 
     const cartContainer =
         document.getElementById(
-            "cartContainer"
+            "cartItems"
         );
 
 
-    if (!cartContainer) return;
+    if (!cartContainer) {
+
+        console.error(
+            "Cart container not found"
+        );
+
+        return;
+    }
 
 
     cartContainer.innerHTML = "";
 
+
+    // ===============================
+    // EMPTY CART
+    // ===============================
 
     if (
         !cartItems ||
@@ -127,7 +152,9 @@ function displayCart(cartItems) {
                 padding:40px;
             ">
 
-                <h2>Your Cart is Empty</h2>
+                <h2>
+                    Your Cart is Empty
+                </h2>
 
                 <p>
                     Add some products to your cart.
@@ -137,6 +164,7 @@ function displayCart(cartItems) {
 
         `;
 
+
         updateTotals(0);
 
         return;
@@ -145,6 +173,10 @@ function displayCart(cartItems) {
 
     let subtotal = 0;
 
+
+    // ===============================
+    // CART ITEMS
+    // ===============================
 
     cartItems.forEach(
         cartItem => {
@@ -216,6 +248,8 @@ function displayCart(cartItems) {
                     </p>
 
 
+                    <!-- QUANTITY -->
+
                     <div class="quantity-controls">
 
                         <button
@@ -249,13 +283,19 @@ function displayCart(cartItems) {
                     </div>
 
 
+                    <!-- ITEM TOTAL -->
+
                     <p>
+
                         <strong>
                             Total:
                             ₹${itemTotal}
                         </strong>
+
                     </p>
 
+
+                    <!-- REMOVE -->
 
                     <button
                         onclick="
@@ -275,11 +315,18 @@ function displayCart(cartItems) {
             cartContainer.appendChild(
                 cartCard
             );
+
         }
     );
 
 
-    updateTotals(subtotal);
+    // ===============================
+    // UPDATE TOTAL
+    // ===============================
+
+    updateTotals(
+        subtotal
+    );
 }
 
 
@@ -287,7 +334,9 @@ function displayCart(cartItems) {
 // UPDATE TOTALS
 // ===============================
 
-function updateTotals(subtotal) {
+function updateTotals(
+    subtotal
+) {
 
     const subtotalElement =
         document.getElementById(
@@ -304,14 +353,16 @@ function updateTotals(subtotal) {
     if (subtotalElement) {
 
         subtotalElement.textContent =
-            "₹" + subtotal;
+            "₹" +
+            subtotal;
     }
 
 
     if (totalElement) {
 
         totalElement.textContent =
-            "₹" + subtotal;
+            "₹" +
+            subtotal;
     }
 }
 
@@ -341,9 +392,13 @@ function decreaseQuantity(
     currentQuantity
 ) {
 
-    if (currentQuantity <= 1) {
+    if (
+        currentQuantity <= 1
+    ) {
 
-        removeItem(cartItemId);
+        removeItem(
+            cartItemId
+        );
 
         return;
     }
@@ -367,10 +422,12 @@ async function updateCartItem(
 
     try {
 
-        // First get existing cart item
+        // GET EXISTING CART ITEM
+
         const getResponse =
             await fetch(
-                "https://buynest-qbzg.onrender.com/getCartitem/" +
+                BASE_URL +
+                "/getCartitem/" +
                 cartItemId
             );
 
@@ -387,29 +444,46 @@ async function updateCartItem(
             await getResponse.json();
 
 
-        const cartItem =
-            result.data || result;
+        console.log(
+            "Cart item:",
+            result
+        );
 
+
+        const cartItem =
+            result.data ||
+            result;
+
+
+        // Update quantity
 
         cartItem.quantity =
             quantity;
 
 
-        // Update cart item
+        // PUT UPDATED CART ITEM
+
         const response =
             await fetch(
-                "https://buynest-qbzg.onrender.com/updateCartitem/" +
+                BASE_URL +
+                "/updateCartitem/" +
                 cartItemId,
                 {
+
                     method: "PUT",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
-                        JSON.stringify(cartItem)
+                        JSON.stringify(
+                            cartItem
+                        )
+
                 }
             );
 
@@ -421,6 +495,8 @@ async function updateCartItem(
             );
         }
 
+
+        // Reload cart
 
         await loadCart();
 
@@ -453,6 +529,7 @@ async function removeItem(
             "Are you sure you want to remove this item?"
         )
     ) {
+
         return;
     }
 
@@ -461,10 +538,13 @@ async function removeItem(
 
         const response =
             await fetch(
-                "https://buynest-qbzg.onrender.com/deleteCartitem/" +
+                BASE_URL +
+                "/deleteCartitem/" +
                 cartItemId,
                 {
+
                     method: "DELETE"
+
                 }
             );
 
@@ -476,6 +556,8 @@ async function removeItem(
             );
         }
 
+
+        // Reload cart
 
         await loadCart();
 
