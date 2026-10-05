@@ -7,7 +7,7 @@ document
         event.preventDefault();
 
         const email =
-            document.getElementById("email").value;
+            document.getElementById("email").value.trim();
 
         const password =
             document.getElementById("password").value;
@@ -23,7 +23,10 @@ document
 
         .then(response => {
 
-            console.log("Login Response:", response.status);
+            console.log(
+                "Login Response:",
+                response.status
+            );
 
             if (!response.ok) {
                 throw new Error("Invalid email or password");
@@ -39,7 +42,7 @@ document
                 deliveryPerson
             );
 
-            // Save logged-in person's details
+            // Save delivery person details
             localStorage.setItem(
                 "deliveryPersonId",
                 deliveryPerson.id

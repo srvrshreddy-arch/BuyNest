@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // Load orders for logged-in person
+    // Load orders
     loadAssignedOrders();
 
 });
@@ -101,11 +101,8 @@ function loadAssignedOrders() {
         );
 
 
-        // Update dashboard statistics
         displayStatistics(orders);
 
-
-        // Display orders
         displayOrders(orders);
 
     })
@@ -399,10 +396,7 @@ function getButtons(order) {
             .toUpperCase();
 
 
-    // -----------------------------------------
     // PLACED / ASSIGNED
-    // -----------------------------------------
-
     if (
         status === "PLACED" ||
         status === "ASSIGNED"
@@ -422,10 +416,7 @@ function getButtons(order) {
     }
 
 
-    // -----------------------------------------
     // PICKED UP
-    // -----------------------------------------
-
     if (
         status === "PICKED_UP"
     ) {
@@ -444,10 +435,7 @@ function getButtons(order) {
     }
 
 
-    // -----------------------------------------
     // OUT FOR DELIVERY
-    // -----------------------------------------
-
     if (
         status === "OUT_FOR_DELIVERY"
     ) {
@@ -466,10 +454,7 @@ function getButtons(order) {
     }
 
 
-    // -----------------------------------------
     // DELIVERED
-    // -----------------------------------------
-
     if (
         status === "DELIVERED"
     ) {
@@ -530,7 +515,6 @@ function markAsPickedUp(orderId) {
         );
 
 
-        // Reload dashboard
         loadAssignedOrders();
 
     })
@@ -593,7 +577,6 @@ function markOutForDelivery(orderId) {
         );
 
 
-        // Reload dashboard
         loadAssignedOrders();
 
     })
@@ -656,7 +639,6 @@ function markAsDelivered(orderId) {
         );
 
 
-        // Reload dashboard
         loadAssignedOrders();
 
     })
@@ -684,7 +666,6 @@ function markAsDelivered(orderId) {
 
 function logoutDeliveryPerson() {
 
-    // Remove logged-in delivery person
     localStorage.removeItem(
         "deliveryPersonId"
     );
@@ -698,7 +679,6 @@ function logoutDeliveryPerson() {
     );
 
 
-    // Go back to login
     window.location.href =
         "delivery-login.html";
 
