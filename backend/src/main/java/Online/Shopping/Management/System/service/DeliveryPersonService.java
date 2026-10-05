@@ -159,8 +159,26 @@ public class DeliveryPersonService {
                                 "Order not found with id: " + orderId
                         ));
 
+        // Mark order as DELIVERED
         order.setStatus("DELIVERED");
 
+
+        // =================================================
+        // MAKE DELIVERY PERSON AVAILABLE AGAIN
+        // =================================================
+
+        if (order.getDeliveryPerson() != null) {
+
+            DeliveryPerson deliveryPerson =
+                    order.getDeliveryPerson();
+
+            deliveryPerson.setStatus("AVAILABLE");
+
+            deliveryPersonRepository.save(deliveryPerson);
+        }
+
+
+        // Save updated order
         return orderRepository.save(order);
     }
 
