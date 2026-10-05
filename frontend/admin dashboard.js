@@ -2,7 +2,7 @@
 // ADMIN DASHBOARD
 // ===============================
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://buynest-qbzg.onrender.com";
 
 
 // ===============================
@@ -110,19 +110,23 @@ function loadRecentOrders() {
         .then(response => response.json())
         .then(orders => {
 
-            const tbody = document.querySelector("table tbody");
+            const tbody =
+                document.querySelector("table tbody");
 
             tbody.innerHTML = "";
 
             orders.forEach(order => {
 
-                const row = document.createElement("tr");
+                const row =
+                    document.createElement("tr");
 
                 row.innerHTML = `
                     <td>#${order.id}</td>
 
                     <td>
-                        ${order.user ? order.user.name : "Unknown"}
+                        ${order.user
+                            ? order.user.name
+                            : "Unknown"}
                     </td>
 
                     <td>
@@ -146,7 +150,10 @@ function loadRecentOrders() {
 
         })
         .catch(error => {
-            console.error("Error loading recent orders:", error);
+            console.error(
+                "Error loading recent orders:",
+                error
+            );
         });
 }
 
@@ -161,7 +168,8 @@ function getStatusClass(status) {
         return "";
     }
 
-    status = status.toLowerCase();
+    status =
+        status.toLowerCase();
 
     if (status === "delivered") {
         return "delivered";
