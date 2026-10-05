@@ -19,7 +19,11 @@ import Online.Shopping.Management.System.service.CartitemService;
 import jakarta.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = {
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "https://buynest-frontend-jqys.onrender.com"
+})
 public class CartitemController {
 
     @Autowired
