@@ -1,59 +1,34 @@
-// =====================================================
-// GET LOGGED-IN USER ID
-// =====================================================
-
 const USER_ID =
     Number(
         localStorage.getItem("userId")
     );
 
-console.log(
-    "Logged-in User ID:",
-    USER_ID
-);
-
-
-// =====================================================
-// CART ITEMS API
-// =====================================================
 
 const CART_ITEMS_API =
-    "http://localhost:8080/getCartitems/" +
+    "https://buynest-qbzg.onrender.com/getCartitems/" +
     USER_ID;
 
 
-// =====================================================
+// ===============================
 // CHECK LOGIN
-// =====================================================
+// ===============================
 
 if (!USER_ID) {
 
-    alert(
-        "Please login first."
-    );
+    alert("Please login first.");
 
     window.location.href =
         "customer-login.html";
 }
 
 
-// =====================================================
+// ===============================
 // LOAD CART
-// =====================================================
+// ===============================
 
 async function loadCart() {
 
     try {
-
-        console.log(
-            "Loading cart for user:",
-            USER_ID
-        );
-
-
-        // =================================================
-        // GET CURRENT USER'S CART ITEMS
-        // =================================================
 
         const response =
             await fetch(
@@ -63,273 +38,230 @@ async function loadCart() {
 
         if (!response.ok) {
 
-            const errorText =
-                await response.text();
-
-            console.error(
-                "Cart API error:",
-                errorText
-            );
-
             throw new Error(
-                "Failed to load cart items"
+                "Failed to fetch cart"
             );
-
         }
 
 
-        const cartItems =
+        const result =
             await response.json();
 
 
         console.log(
-            "Cart items:",
-            cartItems
+            "Cart received:",
+            result
         );
 
 
-        // =================================================
-        // CHECK EMPTY CART
-        // =================================================
-
-        if (
-            !Array.isArray(cartItems) ||
-            cartItems.length === 0
-        ) {
-
-            document.getElementById(
-                "cartItems"
-            ).innerHTML = `
-
-                <div class="empty-cart">
-
-                    <p>
-                        Your cart is empty.
-                    </p>
-
-                    <br>
-
-                    <button
-                        onclick="window.location.href='orders.html'"
-                    >
-
-                        View My Orders
-
-                    </button>
-
-                </div>
-
-            `;
+        const cartItems =
+            Array.isArray(result)
+                ? result
+                : result.data;
 
 
-            updateSummary(0);
-
-            return;
-
-        }
+        displayCart(cartItems || []);
 
 
-        // =================================================
-        // DISPLAY CART
-        // =================================================
-
-        displayCart(
-            cartItems
-        );
-
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Cart Error:",
+            "Error loading cart:",
             error
         );
 
 
-        document.getElementById(
-            "cartItems"
-        ).innerHTML = `
-
-            <p>
-                Unable to load cart.
-            </p>
-
-        `;
+        const cartContainer =
+            document.getElementById(
+                "cartContainer"
+            );
 
 
-        updateSummary(0);
+        if (cartContainer) {
 
+            cartContainer.innerHTML = `
+
+                <p style="
+                    text-align:center;
+                    color:red;
+                    font-size:18px;
+                ">
+
+                    Unable to load cart.
+
+                </p>
+
+            `;
+        }
     }
-
 }
 
 
-// =====================================================
+// ===============================
 // DISPLAY CART
-// =====================================================
+// ===============================
 
-function displayCart(
-    cartItems
-) {
+function displayCart(cartItems) {
 
-    const cartItemsContainer =
+    const cartContainer =
         document.getElementById(
-            "cartItems"
+            "cartContainer"
         );
 
 
-    cartItemsContainer.innerHTML =
-        "";
+    if (!cartContainer) return;
+
+
+    cartContainer.innerHTML = "";
+
+
+    if (
+        !cartItems ||
+        cartItems.length === 0
+    ) {
+
+        cartContainer.innerHTML = `
+
+            <div style="
+                text-align:center;
+                padding:40px;
+            ">
+
+                <h2>Your Cart is Empty</h2>
+
+                <p>
+                    Add some products to your cart.
+                </p>
+
+            </div>
+
+        `;
+
+        updateTotals(0);
+
+        return;
+    }
 
 
     let subtotal = 0;
 
 
     cartItems.forEach(
-        item => {
-
-            // =================================================
-            // CHECK PRODUCT
-            // =================================================
-
-            if (!item.product) {
-
-                console.log(
-                    "Product missing:",
-                    item
-                );
-
-                return;
-
-            }
-
-
-            // =================================================
-            // PRODUCT DETAILS
-            // =================================================
+        cartItem => {
 
             const product =
-                item.product;
+                cartItem.product;
 
 
             const quantity =
                 Number(
-                    item.quantity
-                ) || 0;
+                    cartItem.quantity || 1
+                );
 
 
             const price =
                 Number(
-                    product.price
-                ) || 0;
+                    product?.price || 0
+                );
 
 
             const itemTotal =
                 price * quantity;
 
 
-            subtotal +=
-                itemTotal;
+            subtotal += itemTotal;
 
 
-            // =================================================
-            // CREATE CART ITEM
-            // =================================================
-
-            const cartItem =
+            const cartCard =
                 document.createElement(
                     "div"
                 );
 
 
-            cartItem.className =
+            cartCard.className =
                 "cart-item";
 
 
-            cartItem.innerHTML = `
+            cartCard.innerHTML = `
 
-                <div class="item-image">
-
-                    <img
-                        src="${product.imageUrl || ""}"
-                        alt="${product.name || "Product"}"
-                        onerror="
-                            this.onerror=null;
-                            this.src='https://via.placeholder.com/100x100?text=No+Image';
-                        "
-                    >
-
-                </div>
-
-
-                <div class="item-details">
-
-                    <h2>
-                        ${product.name || "Product"}
-                    </h2>
+                <img
+                    src="${
+                        product?.imageUrl ||
+                        product?.image ||
+                        ""
+                    }"
+                    alt="${
+                        product?.name ||
+                        "Product"
+                    }"
+                    onerror="
+                        this.src='https://via.placeholder.com/150x150?text=No+Image'
+                    "
+                >
 
 
-                    <p>
-                        ${product.description || ""}
-                    </p>
+                <div class="cart-item-details">
+
+                    <h3>
+                        ${
+                            product?.name ||
+                            "Product"
+                        }
+                    </h3>
 
 
                     <p>
                         Price:
-                        ₹${price.toLocaleString("en-IN")}
+                        ₹${price}
                     </p>
+
+
+                    <div class="quantity-controls">
+
+                        <button
+                            onclick="
+                                decreaseQuantity(
+                                    ${cartItem.id},
+                                    ${quantity}
+                                )
+                            "
+                        >
+                            -
+                        </button>
+
+
+                        <span>
+                            ${quantity}
+                        </span>
+
+
+                        <button
+                            onclick="
+                                increaseQuantity(
+                                    ${cartItem.id},
+                                    ${quantity}
+                                )
+                            "
+                        >
+                            +
+                        </button>
+
+                    </div>
 
 
                     <p>
-                        Quantity:
-                        ${quantity}
+                        <strong>
+                            Total:
+                            ₹${itemTotal}
+                        </strong>
                     </p>
 
 
-                    <strong>
-                        Total:
-                        ₹${itemTotal.toLocaleString("en-IN")}
-                    </strong>
-
-                </div>
-
-
-                <div class="cart-actions">
-
                     <button
                         onclick="
-                            increaseQuantity(
-                                ${item.id},
-                                ${quantity}
+                            removeItem(
+                                ${cartItem.id}
                             )
-                        "
-                    >
-                        +
-                    </button>
-
-
-                    <span>
-                        ${quantity}
-                    </span>
-
-
-                    <button
-                        onclick="
-                            decreaseQuantity(
-                                ${item.id},
-                                ${quantity}
-                            )
-                        "
-                    >
-                        -
-                    </button>
-
-
-                    <button
-                        class="remove"
-                        onclick="
-                            removeItem(${item.id})
                         "
                     >
                         Remove
@@ -340,32 +272,22 @@ function displayCart(
             `;
 
 
-            cartItemsContainer.appendChild(
-                cartItem
+            cartContainer.appendChild(
+                cartCard
             );
-
         }
     );
 
 
-    // =================================================
-    // UPDATE SUMMARY
-    // =================================================
-
-    updateSummary(
-        subtotal
-    );
-
+    updateTotals(subtotal);
 }
 
 
-// =====================================================
-// UPDATE SUMMARY
-// =====================================================
+// ===============================
+// UPDATE TOTALS
+// ===============================
 
-function updateSummary(
-    subtotal
-) {
+function updateTotals(subtotal) {
 
     const subtotalElement =
         document.getElementById(
@@ -381,89 +303,74 @@ function updateSummary(
 
     if (subtotalElement) {
 
-        subtotalElement.innerText =
-            "₹" +
-            subtotal.toLocaleString("en-IN");
-
+        subtotalElement.textContent =
+            "₹" + subtotal;
     }
 
 
     if (totalElement) {
 
-        totalElement.innerText =
-            "₹" +
-            subtotal.toLocaleString("en-IN");
-
+        totalElement.textContent =
+            "₹" + subtotal;
     }
-
 }
 
 
-// =====================================================
+// ===============================
 // INCREASE QUANTITY
-// =====================================================
+// ===============================
 
-async function increaseQuantity(
+function increaseQuantity(
     cartItemId,
     currentQuantity
 ) {
 
-    await updateCartItem(
+    updateCartItem(
         cartItemId,
         currentQuantity + 1
     );
-
 }
 
 
-// =====================================================
+// ===============================
 // DECREASE QUANTITY
-// =====================================================
+// ===============================
 
-async function decreaseQuantity(
+function decreaseQuantity(
     cartItemId,
     currentQuantity
 ) {
 
-    if (
-        currentQuantity <= 1
-    ) {
+    if (currentQuantity <= 1) {
 
-        alert(
-            "Quantity cannot be less than 1."
-        );
+        removeItem(cartItemId);
 
         return;
-
     }
 
 
-    await updateCartItem(
+    updateCartItem(
         cartItemId,
         currentQuantity - 1
     );
-
 }
 
 
-// =====================================================
+// ===============================
 // UPDATE CART ITEM
-// =====================================================
+// ===============================
 
 async function updateCartItem(
     cartItemId,
-    newQuantity
+    quantity
 ) {
 
     try {
 
-        // =================================================
-        // GET EXISTING CART ITEM
-        // =================================================
-
+        // First get existing cart item
         const getResponse =
             await fetch(
-                "http://localhost:8080/getCartitem/" +
+                "https://buynest-qbzg.onrender.com/getCartitem/" +
                 cartItemId
             );
 
@@ -473,273 +380,134 @@ async function updateCartItem(
             throw new Error(
                 "Unable to get cart item"
             );
-
         }
 
 
-        const existingItem =
+        const result =
             await getResponse.json();
 
 
-        console.log(
-            "Existing cart item:",
-            existingItem
-        );
+        const cartItem =
+            result.data || result;
 
 
-        // =================================================
-        // CHECK PRODUCT
-        // =================================================
-
-        if (
-            !existingItem.product
-        ) {
-
-            throw new Error(
-                "Product information not found"
-            );
-
-        }
+        cartItem.quantity =
+            quantity;
 
 
-        // =================================================
-        // CREATE UPDATED CART ITEM
-        // =================================================
-
-        const cartItem = {
-
-            quantity:
-                newQuantity,
-
-            userId:
-                USER_ID,
-
-            productId:
-                existingItem.product.id
-
-        };
-
-
-        console.log(
-            "Updating cart item:",
-            cartItem
-        );
-
-
-        // =================================================
-        // UPDATE API
-        // =================================================
-
+        // Update cart item
         const response =
             await fetch(
-                "http://localhost:8080/updateCartitem/" +
+                "https://buynest-qbzg.onrender.com/updateCartitem/" +
                 cartItemId,
                 {
-
                     method: "PUT",
 
                     headers: {
-
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
-                        JSON.stringify(
-                            cartItem
-                        )
-
+                        JSON.stringify(cartItem)
                 }
             );
 
 
         if (!response.ok) {
 
-            const errorText =
-                await response.text();
-
-
-            console.error(
-                "Update error:",
-                errorText
-            );
-
-
             throw new Error(
-                "Failed to update cart item"
+                "Unable to update cart"
             );
-
         }
 
 
-        // =================================================
-        // RELOAD CART
-        // =================================================
-
         await loadCart();
 
-    }
 
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Update error:",
+            "Error updating cart:",
             error
         );
 
 
         alert(
-            "Unable to update quantity."
+            "Unable to update cart."
         );
-
     }
-
 }
 
 
-// =====================================================
-// DELETE CART ITEM
-// =====================================================
+// ===============================
+// REMOVE CART ITEM
+// ===============================
 
 async function removeItem(
     cartItemId
 ) {
 
-    const confirmDelete =
-        confirm(
+    if (
+        !confirm(
             "Are you sure you want to remove this item?"
-        );
-
-
-    if (!confirmDelete) {
-
+        )
+    ) {
         return;
-
     }
 
 
     try {
 
-        // =================================================
-        // DELETE
-        // =================================================
-
         const response =
             await fetch(
-                "http://localhost:8080/deleteCartitem/" +
+                "https://buynest-qbzg.onrender.com/deleteCartitem/" +
                 cartItemId,
                 {
-
                     method: "DELETE"
-
                 }
             );
 
 
         if (!response.ok) {
 
-            const errorText =
-                await response.text();
-
-
-            console.error(
-                "Delete error:",
-                errorText
-            );
-
-
             throw new Error(
-                "Failed to delete cart item"
+                "Unable to delete cart item"
             );
-
         }
 
 
-        // =================================================
-        // RELOAD CART
-        // =================================================
-
         await loadCart();
 
-    }
 
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Delete error:",
+            "Error removing cart item:",
             error
         );
 
 
         alert(
-            "Unable to remove product."
+            "Unable to remove item."
         );
-
     }
-
 }
 
 
-// =====================================================
+// ===============================
 // PROCEED TO CHECKOUT
-// =====================================================
+// ===============================
 
 function proceedToCheckout() {
 
-    console.log(
-        "========== PROCEED TO CHECKOUT =========="
-    );
-
-
-    // =================================================
-    // GET CURRENT USER
-    // =================================================
-
-    const currentUserId =
-        Number(
-            localStorage.getItem(
-                "userId"
-            )
-        );
-
-
-    console.log(
-        "Checkout User ID:",
-        currentUserId
-    );
-
-
-    // =================================================
-    // CHECK LOGIN
-    // =================================================
-
-    if (!currentUserId) {
-
-        alert(
-            "Please login first."
-        );
-
-        window.location.href =
-            "customer-login.html";
-
-        return;
-
-    }
-
-
-    // =================================================
-    // GO TO CHECKOUT PAGE
-    // =================================================
-
     window.location.href =
         "checkout.html";
-
 }
 
 
-// =====================================================
-// LOAD CART WHEN PAGE OPENS
-// =====================================================
+// ===============================
+// INITIAL LOAD
+// ===============================
 
 loadCart();
