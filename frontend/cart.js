@@ -422,7 +422,9 @@ async function updateCartItem(
 
     try {
 
+        // ===============================
         // GET EXISTING CART ITEM
+        // ===============================
 
         const getResponse =
             await fetch(
@@ -445,7 +447,7 @@ async function updateCartItem(
 
 
         console.log(
-            "Cart item:",
+            "Existing cart item:",
             result
         );
 
@@ -455,13 +457,77 @@ async function updateCartItem(
             result;
 
 
-        // Update quantity
+        // ===============================
+        // GET USER ID
+        // ===============================
 
-        cartItem.quantity =
-            quantity;
+        const currentUserId =
+            Number(
+                localStorage.getItem(
+                    "userId"
+                )
+            );
 
 
-        // PUT UPDATED CART ITEM
+        if (!currentUserId) {
+
+            throw new Error(
+                "User is not logged in"
+            );
+        }
+
+
+        // ===============================
+        // GET PRODUCT ID
+        // ===============================
+
+        const productId =
+            Number(
+                cartItem.product?.id
+            );
+
+
+        if (!productId) {
+
+            throw new Error(
+                "Product ID not found"
+            );
+        }
+
+
+        // ===============================
+        // CREATE CORRECT DTO
+        // ===============================
+        //
+        // Backend expects:
+        // userId
+        // productId
+        // quantity
+        // ===============================
+
+        const updateData = {
+
+            userId:
+                currentUserId,
+
+            productId:
+                productId,
+
+            quantity:
+                Number(quantity)
+
+        };
+
+
+        console.log(
+            "Updating cart with:",
+            updateData
+        );
+
+
+        // ===============================
+        // UPDATE CART ITEM
+        // ===============================
 
         const response =
             await fetch(
@@ -481,22 +547,38 @@ async function updateCartItem(
 
                     body:
                         JSON.stringify(
-                            cartItem
+                            updateData
                         )
 
                 }
             );
 
 
+        // ===============================
+        // CHECK RESPONSE
+        // ===============================
+
         if (!response.ok) {
 
+            const errorText =
+                await response.text();
+
+
             throw new Error(
+                errorText ||
                 "Unable to update cart"
             );
         }
 
 
-        // Reload cart
+        console.log(
+            "Cart updated successfully"
+        );
+
+
+        // ===============================
+        // RELOAD CART
+        // ===============================
 
         await loadCart();
 
@@ -510,7 +592,8 @@ async function updateCartItem(
 
 
         alert(
-            "Unable to update cart."
+            "Unable to update cart.\n\n" +
+            error.message
         );
     }
 }
@@ -557,7 +640,9 @@ async function removeItem(
         }
 
 
-        // Reload cart
+        // ===============================
+        // RELOAD CART
+        // ===============================
 
         await loadCart();
 
@@ -571,7 +656,8 @@ async function removeItem(
 
 
         alert(
-            "Unable to remove item."
+            "Unable to remove item.\n\n" +
+            error.message
         );
     }
 }
