@@ -2,17 +2,18 @@
 // API URLS
 // =====================================================
 
+const API_BASE_URL =
+    "https://buynest-qbzg.onrender.com";
+
 const API_URL =
-    "http://localhost:8080/getProducts";
+    API_BASE_URL + "/getProducts";
 
 const SAVE_CART_ITEM_API =
-    "http://localhost:8080/saveCartitem";
+    API_BASE_URL + "/saveCartitem";
 
 
 // =====================================================
 // GET PRODUCT ID FROM URL
-// Example:
-// product-details.html?id=103
 // =====================================================
 
 const urlParams =
@@ -21,10 +22,7 @@ const urlParams =
 const productId =
     urlParams.get("id");
 
-console.log(
-    "Product ID:",
-    productId
-);
+console.log("Product ID:", productId);
 
 
 // =====================================================
@@ -32,14 +30,9 @@ console.log(
 // =====================================================
 
 const userId =
-    Number(
-        localStorage.getItem("userId")
-    );
+    Number(localStorage.getItem("userId"));
 
-console.log(
-    "Logged-in User ID:",
-    userId
-);
+console.log("Logged-in User ID:", userId);
 
 
 // =====================================================
@@ -48,9 +41,7 @@ console.log(
 
 if (!userId) {
 
-    alert(
-        "Please login first."
-    );
+    alert("Please login first.");
 
     window.location.href =
         "customer-login.html";
@@ -62,69 +53,43 @@ if (!userId) {
 // =====================================================
 
 const productImage =
-    document.getElementById(
-        "productImage"
-    );
+    document.getElementById("productImage");
 
 const category =
-    document.getElementById(
-        "category"
-    );
+    document.getElementById("category");
 
 const productName =
-    document.getElementById(
-        "productName"
-    );
+    document.getElementById("productName");
 
 const productDescription =
-    document.getElementById(
-        "productDescription"
-    );
+    document.getElementById("productDescription");
 
 const productPrice =
-    document.getElementById(
-        "productPrice"
-    );
+    document.getElementById("productPrice");
 
 const productQuantity =
-    document.getElementById(
-        "productQuantity"
-    );
+    document.getElementById("productQuantity");
 
 const quantityInput =
-    document.getElementById(
-        "quantity"
-    );
+    document.getElementById("quantity");
 
 const productIdElement =
-    document.getElementById(
-        "productId"
-    );
+    document.getElementById("productId");
 
 const productCategory =
-    document.getElementById(
-        "productCategory"
-    );
+    document.getElementById("productCategory");
 
 const detailsPrice =
-    document.getElementById(
-        "detailsPrice"
-    );
+    document.getElementById("detailsPrice");
 
 const detailsQuantity =
-    document.getElementById(
-        "detailsQuantity"
-    );
+    document.getElementById("detailsQuantity");
 
 const cartButton =
-    document.getElementById(
-        "cartButton"
-    );
+    document.getElementById("cartButton");
 
 const buyButton =
-    document.getElementById(
-        "buyButton"
-    );
+    document.getElementById("buyButton");
 
 
 // =====================================================
@@ -151,14 +116,18 @@ async function loadProduct() {
         }
 
 
+        console.log(
+            "Fetching products from:",
+            API_URL
+        );
+
+
         // =================================================
-        // GET PRODUCTS
+        // GET PRODUCTS FROM RENDER
         // =================================================
 
         const response =
-            await fetch(
-                API_URL
-            );
+            await fetch(API_URL);
 
 
         if (!response.ok) {
@@ -192,12 +161,9 @@ async function loadProduct() {
         let products = [];
 
 
-        if (
-            Array.isArray(result)
-        ) {
+        if (Array.isArray(result)) {
 
-            products =
-                result;
+            products = result;
 
         }
 
@@ -206,8 +172,7 @@ async function loadProduct() {
             Array.isArray(result.data)
         ) {
 
-            products =
-                result.data;
+            products = result.data;
 
         }
 
@@ -221,7 +186,7 @@ async function loadProduct() {
 
 
         // =================================================
-        // FIND CURRENT PRODUCT
+        // FIND PRODUCT
         // =================================================
 
         currentProduct =
@@ -319,9 +284,8 @@ async function loadProduct() {
 // DISPLAY PRODUCT
 // =====================================================
 
-function displayProduct(
-    product
-) {
+function displayProduct(product) {
+
 
     // =================================================
     // IMAGE
@@ -359,9 +323,7 @@ function displayProduct(
     // CATEGORY
     // =================================================
 
-    if (
-        product.category
-    ) {
+    if (product.category) {
 
         if (
             typeof product.category ===
@@ -459,18 +421,14 @@ function displayProduct(
     // =================================================
 
     const price =
-        Number(
-            product.price
-        ) || 0;
+        Number(product.price) || 0;
 
 
     if (productPrice) {
 
         productPrice.textContent =
             "₹" +
-            price.toLocaleString(
-                "en-IN"
-            );
+            price.toLocaleString("en-IN");
 
     }
 
@@ -479,9 +437,7 @@ function displayProduct(
 
         detailsPrice.textContent =
             "₹" +
-            price.toLocaleString(
-                "en-IN"
-            );
+            price.toLocaleString("en-IN");
 
     }
 
@@ -542,7 +498,7 @@ function displayProduct(
 
 
 // =====================================================
-// GET AVAILABLE PRODUCT QUANTITY
+// GET AVAILABLE QUANTITY
 // =====================================================
 
 function getAvailableQuantity() {
@@ -582,9 +538,7 @@ function increaseQuantity() {
 
 
     let quantity =
-        Number(
-            quantityInput.value
-        ) || 1;
+        Number(quantityInput.value) || 1;
 
 
     if (
@@ -593,7 +547,6 @@ function increaseQuantity() {
     ) {
 
         quantity++;
-
 
         quantityInput.value =
             quantity;
@@ -610,17 +563,12 @@ function increaseQuantity() {
 function decreaseQuantity() {
 
     let quantity =
-        Number(
-            quantityInput.value
-        ) || 1;
+        Number(quantityInput.value) || 1;
 
 
-    if (
-        quantity > 1
-    ) {
+    if (quantity > 1) {
 
         quantity--;
-
 
         quantityInput.value =
             quantity;
@@ -638,10 +586,6 @@ async function addProductToCart() {
 
     try {
 
-        // =================================================
-        // CHECK PRODUCT
-        // =================================================
-
         if (!currentProduct) {
 
             alert(
@@ -653,15 +597,9 @@ async function addProductToCart() {
         }
 
 
-        // =================================================
-        // GET CURRENT USER
-        // =================================================
-
         const currentUserId =
             Number(
-                localStorage.getItem(
-                    "userId"
-                )
+                localStorage.getItem("userId")
             );
 
 
@@ -679,23 +617,13 @@ async function addProductToCart() {
         }
 
 
-        // =================================================
-        // GET QUANTITY
-        // =================================================
-
         const quantity =
             Number(
                 quantityInput.value
             ) || 1;
 
 
-        // =================================================
-        // CHECK QUANTITY
-        // =================================================
-
-        if (
-            quantity < 1
-        ) {
+        if (quantity < 1) {
 
             alert(
                 "Quantity must be at least 1."
@@ -725,29 +653,24 @@ async function addProductToCart() {
 
 
         // =================================================
-        // CREATE CART ITEM
+        // CART ITEM
         // =================================================
 
         const cartItem = {
 
-            quantity:
-                quantity,
+            user: {
+                id: currentUserId
+            },
 
-            userId:
-                currentUserId,
-
-            productId:
-                Number(
+            product: {
+                id: Number(
                     currentProduct.id
                 )
+            },
+
+            quantity: quantity
 
         };
-
-
-        console.log(
-            "Logged-in User ID:",
-            currentUserId
-        );
 
 
         console.log(
@@ -765,14 +688,11 @@ async function addProductToCart() {
                 SAVE_CART_ITEM_API,
                 {
 
-                    method:
-                        "POST",
+                    method: "POST",
 
                     headers: {
-
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
@@ -784,21 +704,10 @@ async function addProductToCart() {
             );
 
 
-        // =================================================
-        // CHECK RESPONSE
-        // =================================================
-
         if (!response.ok) {
 
             const errorText =
                 await response.text();
-
-
-            console.error(
-                "Cart API error:",
-                errorText
-            );
-
 
             throw new Error(
                 errorText ||
@@ -807,10 +716,6 @@ async function addProductToCart() {
 
         }
 
-
-        // =================================================
-        // SUCCESS
-        // =================================================
 
         alert(
             currentProduct.name +
@@ -839,31 +744,11 @@ async function addProductToCart() {
 
 // =====================================================
 // BUY NOW
-//
-// IMPORTANT FLOW:
-//
-// Product Details
-//       ↓
-// Buy Now
-//       ↓
-// checkout.html
-//       ↓
-// Place Order
-//       ↓
-// order-success.html
-//       ↓
-// orders.html
-//
-// BUY NOW DOES NOT CREATE ORDER HERE.
 // =====================================================
 
 function buyNow() {
 
     try {
-
-        // =================================================
-        // CHECK PRODUCT
-        // =================================================
 
         if (!currentProduct) {
 
@@ -876,22 +761,10 @@ function buyNow() {
         }
 
 
-        // =================================================
-        // GET CURRENT USER
-        // =================================================
-
         const currentUserId =
             Number(
-                localStorage.getItem(
-                    "userId"
-                )
+                localStorage.getItem("userId")
             );
-
-
-        console.log(
-            "Buy Now User ID:",
-            currentUserId
-        );
 
 
         if (!currentUserId) {
@@ -908,31 +781,10 @@ function buyNow() {
         }
 
 
-        // =================================================
-        // GET QUANTITY
-        // =================================================
-
         const quantity =
             Number(
                 quantityInput.value
             ) || 1;
-
-
-        // =================================================
-        // VALIDATE QUANTITY
-        // =================================================
-
-        if (
-            quantity < 1
-        ) {
-
-            alert(
-                "Quantity must be at least 1."
-            );
-
-            return;
-
-        }
 
 
         const availableQuantity =
@@ -953,10 +805,6 @@ function buyNow() {
         }
 
 
-        // =================================================
-        // GET PRODUCT PRICE
-        // =================================================
-
         const price =
             Number(
                 currentProduct.price
@@ -966,12 +814,6 @@ function buyNow() {
         const totalAmount =
             price * quantity;
 
-
-        // =================================================
-        // SAVE BUY NOW DATA
-        //
-        // checkout.js will read this data.
-        // =================================================
 
         const buyNowData = {
 
@@ -998,16 +840,6 @@ function buyNow() {
         };
 
 
-        console.log(
-            "Buy Now data:",
-            buyNowData
-        );
-
-
-        // =================================================
-        // STORE BUY NOW DATA
-        // =================================================
-
         localStorage.setItem(
             "buyNowProduct",
             JSON.stringify(
@@ -1015,13 +847,6 @@ function buyNow() {
             )
         );
 
-
-        // =================================================
-        // CLEAR OLD ORDER DATA
-        //
-        // This prevents old order details from being
-        // displayed on the checkout/success flow.
-        // =================================================
 
         localStorage.removeItem(
             "orderId"
@@ -1037,15 +862,6 @@ function buyNow() {
 
         localStorage.removeItem(
             "paymentMethod"
-        );
-
-
-        // =================================================
-        // GO TO CHECKOUT
-        // =================================================
-
-        console.log(
-            "Going to checkout.html"
         );
 
 
@@ -1073,7 +889,7 @@ function buyNow() {
 
 
 // =====================================================
-// ADD TO CART BUTTON
+// CART BUTTON
 // =====================================================
 
 if (cartButton) {
