@@ -22,13 +22,18 @@ import jakarta.validation.Valid;
 @RestController
 @CrossOrigin(origins = {
         "http://127.0.0.1:5500",
-        "http://localhost:5500"
+        "http://localhost:5500",
+        "https://buynest-frontend-jqys.onrender.com"
 })
 public class OrderControlller {
 
     @Autowired
     private OrderService orderService;
 
+
+    // =====================================================
+    // SAVE ORDER
+    // =====================================================
 
     @PostMapping("/saveorder")
     public ResponseStructure<Order> saveOrder(
@@ -38,7 +43,10 @@ public class OrderControlller {
     }
 
 
+    // =====================================================
     // BUY NOW
+    // =====================================================
+
     @PostMapping("/buynow")
     public ResponseStructure<Order> buyNow(
             @RequestBody Buynowrequest request) {
@@ -47,12 +55,20 @@ public class OrderControlller {
     }
 
 
+    // =====================================================
+    // GET ALL ORDERS
+    // =====================================================
+
     @GetMapping("/getorders")
     public ResponseStructure<List<Order>> getOrders() {
 
         return orderService.getOrders();
     }
 
+
+    // =====================================================
+    // GET ORDER BY ID
+    // =====================================================
 
     @GetMapping("/getorder/{id}")
     public ResponseStructure<Order> getOrderById(
@@ -62,19 +78,33 @@ public class OrderControlller {
     }
 
 
+    // =====================================================
+    // UPDATE ORDER
+    // =====================================================
+
     @PutMapping("/updateorder/{id}")
     public ResponseStructure<Order> updateOrder(
             @PathVariable Long id,
             @Valid @RequestBody Order order) {
 
-        return orderService.updateOrder(id, order);
+        return orderService.updateOrder(
+                id,
+                order
+        );
     }
 
+
+    // =====================================================
+    // DELETE ORDER
+    // =====================================================
 
     @DeleteMapping("/deleteorder/{id}")
     public ResponseStructure<Order> deleteOrderById(
             @PathVariable Long id) {
 
-        return orderService.deleteOrderById(id);
+        return orderService.deleteOrderById(
+                id
+        );
     }
+
 }
