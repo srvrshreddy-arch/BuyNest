@@ -2,7 +2,7 @@
 // BASE URL
 // =====================================================
 
-const BASE_URL = "https://buynest-qbzg.onrender.com"; 
+const BASE_URL = "https://buynest-qbzg.onrender.com";
 
 
 // =====================================================
@@ -40,8 +40,7 @@ async function loadOrders() {
         if (!response.ok) {
 
             throw new Error(
-                "HTTP Error: " +
-                response.status
+                "HTTP Error: " + response.status
             );
 
         }
@@ -174,8 +173,7 @@ async function loadOrders() {
             // =================================================
 
             const orderStatus =
-                order.status ||
-                "PLACED";
+                order.status || "PLACED";
 
 
             // =================================================
@@ -192,8 +190,8 @@ async function loadOrders() {
             deliveryPersons.forEach(
                 function (person) {
 
-                    // Show only AVAILABLE persons
-                    // or the person already assigned
+                    // Show AVAILABLE persons
+                    // OR the person already assigned
                     if (
                         person.status === "AVAILABLE" ||
                         (
@@ -206,9 +204,7 @@ async function loadOrders() {
                         const selected =
                             order.deliveryPerson &&
                             Number(person.id) ===
-                            Number(
-                                order.deliveryPerson.id
-                            )
+                            Number(order.deliveryPerson.id)
                                 ? "selected"
                                 : "";
 
@@ -230,6 +226,57 @@ async function loadOrders() {
 
                 }
             );
+
+
+            // =================================================
+            // ASSIGN BUTTON
+            // =================================================
+
+            let actionButton = "";
+
+
+            if (order.deliveryPerson) {
+
+                actionButton = `
+
+                    <button
+                        disabled
+                        style="
+                            padding:8px 12px;
+                            border:none;
+                            border-radius:6px;
+                            cursor:default;
+                            background:#d4edda;
+                            color:#155724;
+                            font-weight:bold;
+                        ">
+
+                        Assigned
+
+                    </button>
+
+                `;
+
+            } else {
+
+                actionButton = `
+
+                    <button
+                        onclick="assignDelivery(${order.id})"
+                        style="
+                            padding:8px 12px;
+                            border:none;
+                            border-radius:6px;
+                            cursor:pointer;
+                        ">
+
+                        Assign
+
+                    </button>
+
+                `;
+
+            }
 
 
             // =================================================
@@ -282,6 +329,7 @@ async function loadOrders() {
 
                     <select
                         id="delivery-${order.id}"
+                        ${order.deliveryPerson ? "disabled" : ""}
                         style="
                             padding:8px;
                             border-radius:6px;
@@ -294,18 +342,7 @@ async function loadOrders() {
                     </select>
 
 
-                    <button
-                        onclick="assignDelivery(${order.id})"
-                        style="
-                            padding:8px 12px;
-                            border:none;
-                            border-radius:6px;
-                            cursor:pointer;
-                        ">
-
-                        Assign
-
-                    </button>
+                    ${actionButton}
 
                 </td>
 
@@ -413,6 +450,17 @@ async function assignDelivery(orderId) {
         );
 
 
+    if (!select) {
+
+        alert(
+            "Delivery person selection not found."
+        );
+
+        return;
+
+    }
+
+
     const deliveryPersonId =
         select.value;
 
@@ -484,7 +532,7 @@ async function assignDelivery(orderId) {
         // RELOAD ORDERS
         // =================================================
 
-        loadOrders();
+        await loadOrders();
 
     }
 
