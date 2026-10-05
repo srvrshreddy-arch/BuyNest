@@ -59,7 +59,115 @@ async function loadCheckout() {
 
 
         // =================================================
-        // GET CURRENT USER CART ITEMS
+        // CHECK BUY NOW PRODUCT FIRST
+        // =================================================
+
+        const buyNowData =
+            localStorage.getItem(
+                "buyNowProduct"
+            );
+
+
+        if (buyNowData) {
+
+            console.log(
+                "Buy Now product found:",
+                buyNowData
+            );
+
+
+            const buyNowProduct =
+                JSON.parse(
+                    buyNowData
+                );
+
+
+            // =============================================
+            // CONVERT BUY NOW DATA INTO CART FORMAT
+            // =============================================
+
+            cartItems = [
+
+                {
+
+                    quantity:
+                        Number(
+                            buyNowProduct.quantity
+                        ) || 1,
+
+                    price:
+                        Number(
+                            buyNowProduct.price
+                        ) || 0,
+
+                    product: {
+
+                        id:
+                            Number(
+                                buyNowProduct.productId
+                            ),
+
+                        name:
+                            buyNowProduct.productName,
+
+                        price:
+                            Number(
+                                buyNowProduct.price
+                            ) || 0
+
+                    }
+
+                }
+
+            ];
+
+
+            // =============================================
+            // CALCULATE BUY NOW TOTAL
+            // =============================================
+
+            totalAmount =
+                Number(
+                    buyNowProduct.totalAmount
+                ) ||
+                (
+                    Number(
+                        buyNowProduct.price
+                    ) || 0
+                ) *
+                (
+                    Number(
+                        buyNowProduct.quantity
+                    ) || 1
+                );
+
+
+            console.log(
+                "Buy Now cart:",
+                cartItems
+            );
+
+
+            console.log(
+                "Buy Now total:",
+                totalAmount
+            );
+
+
+            // =============================================
+            // DISPLAY
+            // =============================================
+
+            displayCheckoutItems();
+
+            updateTotals();
+
+            return;
+        }
+
+
+        // =================================================
+        // NORMAL CART CHECKOUT
         // =================================================
 
         const response =
@@ -85,7 +193,7 @@ async function loadCheckout() {
 
 
         // =================================================
-        // BACKEND RETURNS ARRAY
+        // GET CART DATA
         // =================================================
 
         const data =
@@ -109,7 +217,7 @@ async function loadCheckout() {
 
 
         // =================================================
-        // CHECK EMPTY CART
+        // EMPTY CART
         // =================================================
 
         if (
@@ -131,7 +239,7 @@ async function loadCheckout() {
 
 
         // =================================================
-        // CALCULATE TOTAL
+        // CALCULATE CART TOTAL
         // =================================================
 
         totalAmount = 0;
@@ -178,7 +286,7 @@ async function loadCheckout() {
 
 
         // =================================================
-        // DISPLAY ITEMS
+        // DISPLAY CART ITEMS
         // =================================================
 
         displayCheckoutItems();
@@ -191,6 +299,7 @@ async function loadCheckout() {
         updateTotals();
 
     }
+
 
     catch (error) {
 
@@ -396,11 +505,20 @@ function validateCheckoutDetails() {
 
 
     // =================================================
-    // NAME PATTERN
+    // PATTERNS
     // =================================================
 
     const namePattern =
         /^[A-Za-z ]+$/;
+
+    const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const phonePattern =
+        /^[0-9]{10}$/;
+
+    const pinPattern =
+        /^[0-9]{6}$/;
 
 
     // =================================================
@@ -455,10 +573,6 @@ function validateCheckoutDetails() {
     // EMAIL
     // =================================================
 
-    const emailPattern =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
     if (!email) {
 
         alert(
@@ -482,10 +596,6 @@ function validateCheckoutDetails() {
     // =================================================
     // PHONE
     // =================================================
-
-    const phonePattern =
-        /^[0-9]{10}$/;
-
 
     if (!phone) {
 
@@ -548,10 +658,6 @@ function validateCheckoutDetails() {
     // =================================================
     // PIN CODE
     // =================================================
-
-    const pinPattern =
-        /^[0-9]{6}$/;
-
 
     if (!pinCode) {
 
@@ -679,7 +785,9 @@ async function placeOrder() {
                     },
 
                     body:
-                        JSON.stringify(order)
+                        JSON.stringify(
+                            order
+                        )
 
                 }
             );
@@ -875,6 +983,15 @@ async function placeOrder() {
         localStorage.setItem(
             "paymentMethod",
             paymentMethod
+        );
+
+
+        // =================================================
+        // REMOVE BUY NOW DATA
+        // =================================================
+
+        localStorage.removeItem(
+            "buyNowProduct"
         );
 
 
