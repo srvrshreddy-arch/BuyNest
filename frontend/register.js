@@ -91,7 +91,7 @@ form.addEventListener("submit", async function (event) {
 
     try {
 
-        const response = await fetch("http://localhost:8080/saveUser", {
+        const response = await fetch("https://buynest-qbzg.onrender.com/saveUser", {
 
             method: "POST",
 
