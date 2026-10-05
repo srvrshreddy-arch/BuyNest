@@ -655,20 +655,25 @@ async function addProductToCart() {
         // =================================================
         // CART ITEM
         // =================================================
+        // IMPORTANT:
+        // Cartitemdto expects:
+        // userId
+        // productId
+        // quantity
+        // =================================================
 
         const cartItem = {
 
-            user: {
-                id: currentUserId
-            },
+            userId:
+                currentUserId,
 
-            product: {
-                id: Number(
+            productId:
+                Number(
                     currentProduct.id
-                )
-            },
+                ),
 
-            quantity: quantity
+            quantity:
+                quantity
 
         };
 
@@ -704,6 +709,10 @@ async function addProductToCart() {
             );
 
 
+        // =================================================
+        // GET RESPONSE
+        // =================================================
+
         if (!response.ok) {
 
             const errorText =
@@ -716,6 +725,19 @@ async function addProductToCart() {
 
         }
 
+
+        const result =
+            await response.text();
+
+        console.log(
+            "Cart response:",
+            result
+        );
+
+
+        // =================================================
+        // SUCCESS
+        // =================================================
 
         alert(
             currentProduct.name +
