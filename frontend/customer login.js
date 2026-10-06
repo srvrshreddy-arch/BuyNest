@@ -1,9 +1,11 @@
 // ===============================
-// CHECK ALREADY LOGGED IN
+// CHECK CUSTOMER ALREADY LOGGED IN
 // ===============================
 
 if (localStorage.getItem("loggedIn") === "true") {
+
     window.location.href = "home.html";
+
 }
 
 
@@ -13,12 +15,21 @@ if (localStorage.getItem("loggedIn") === "true") {
 
 const form = document.querySelector("#loginForm");
 
+
 form.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
-    const email = document.querySelector("#email").value.trim();
-    const password = document.querySelector("#password").value;
+
+    // ===============================
+    // GET LOGIN DETAILS
+    // ===============================
+
+    const email =
+        document.querySelector("#email").value.trim();
+
+    const password =
+        document.querySelector("#password").value;
 
 
     // ===============================
@@ -26,8 +37,11 @@ form.addEventListener("submit", async function (event) {
     // ===============================
 
     if (!/^[A-Za-z0-9._%+-]+@gmail\.com$/.test(email)) {
+
         alert("Please enter a valid Gmail address.");
+
         return;
+
     }
 
 
@@ -36,8 +50,11 @@ form.addEventListener("submit", async function (event) {
     // ===============================
 
     if (password.length < 8) {
+
         alert("Password must contain at least 8 characters.");
+
         return;
+
     }
 
 
@@ -46,11 +63,18 @@ form.addEventListener("submit", async function (event) {
     // ===============================
 
     const loginData = {
+
         email: email,
+
         password: password
+
     };
 
-    console.log("LOGIN DATA:", loginData);
+
+    console.log(
+        "LOGIN DATA:",
+        loginData
+    );
 
 
     // ===============================
@@ -60,16 +84,25 @@ form.addEventListener("submit", async function (event) {
     try {
 
         const response = await fetch(
+
             "https://buynest-qbzg.onrender.com/login",
+
             {
+
                 method: "POST",
 
                 headers: {
-                    "Content-Type": "application/json"
+
+                    "Content-Type":
+                        "application/json"
+
                 },
 
-                body: JSON.stringify(loginData)
+                body:
+                    JSON.stringify(loginData)
+
             }
+
         );
 
 
@@ -77,9 +110,20 @@ form.addEventListener("submit", async function (event) {
         // DEBUG INFORMATION
         // ===============================
 
-        console.log("LOGIN EMAIL:", email);
-        console.log("RESPONSE STATUS:", response.status);
-        console.log("RESPONSE OK:", response.ok);
+        console.log(
+            "LOGIN EMAIL:",
+            email
+        );
+
+        console.log(
+            "RESPONSE STATUS:",
+            response.status
+        );
+
+        console.log(
+            "RESPONSE OK:",
+            response.ok
+        );
 
 
         // ===============================
@@ -88,13 +132,18 @@ form.addEventListener("submit", async function (event) {
 
         if (response.ok) {
 
-            const user = await response.json();
+            const user =
+                await response.json();
 
-            console.log("LOGIN RESPONSE:", user);
+
+            console.log(
+                "LOGIN RESPONSE:",
+                user
+            );
 
 
             // ===============================
-            // SAVE LOGIN STATUS
+            // SAVE CUSTOMER LOGIN STATUS
             // ===============================
 
             localStorage.setItem(
@@ -104,7 +153,7 @@ form.addEventListener("submit", async function (event) {
 
 
             // ===============================
-            // SAVE USER DETAILS
+            // SAVE CUSTOMER DETAILS
             // ===============================
 
             localStorage.setItem(
@@ -134,10 +183,11 @@ form.addEventListener("submit", async function (event) {
 
 
             // ===============================
-            // GO TO HOME
+            // GO TO CUSTOMER HOME PAGE
             // ===============================
 
-            window.location.href = "home.html";
+            window.location.href =
+                "home.html";
 
         }
 
@@ -148,7 +198,9 @@ form.addEventListener("submit", async function (event) {
 
         else {
 
-            const message = await response.text();
+            const message =
+                await response.text();
+
 
             console.error(
                 "LOGIN FAILED STATUS:",
@@ -168,15 +220,23 @@ form.addEventListener("submit", async function (event) {
                 "\nResponse: " +
                 message
             );
+
         }
 
 
-    } catch (error) {
+    }
+    
+    // ===============================
+    // SERVER / NETWORK ERROR
+    // ===============================
+
+    catch (error) {
 
         console.error(
             "LOGIN ERROR:",
             error
         );
+
 
         alert(
             "Unable to connect to server.\n\n" +
