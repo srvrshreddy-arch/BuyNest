@@ -57,9 +57,7 @@ function loadUsers() {
 function displayUsers(users) {
 
     const tableBody =
-        document.getElementById(
-            "usersTableBody"
-        );
+        document.getElementById("usersTableBody");
 
     tableBody.innerHTML = "";
 
@@ -138,9 +136,7 @@ function editUser(id) {
         .then(response => {
 
             if (!response.ok) {
-                throw new Error(
-                    "User not found"
-                );
+                throw new Error("User not found");
             }
 
             return response.json();
@@ -187,8 +183,107 @@ function editUser(id) {
                 error
             );
 
+            alert("Unable to load user.");
+
+        });
+
+}
+
+
+// ==========================================
+// UPDATE USER
+// ==========================================
+
+function updateUser() {
+
+    const id =
+        document.getElementById("editId").value;
+
+
+    const userData = {
+
+        name:
+            document.getElementById(
+                "editName"
+            ).value,
+
+        email:
+            document.getElementById(
+                "editEmail"
+            ).value,
+
+        phone:
+            Number(
+                document.getElementById(
+                    "editPhone"
+                ).value
+            ),
+
+        password:
+            document.getElementById(
+                "editPassword"
+            ).value
+
+    };
+
+
+    fetch(`${BASE_URL}/updateUser/${id}`, {
+
+        method: "PUT",
+
+        headers: {
+
+            "Content-Type":
+                "application/json"
+
+        },
+
+        body:
+            JSON.stringify(userData)
+
+    })
+
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Failed to update user"
+                );
+            }
+
+            return response.json();
+
+        })
+
+        .then(updatedUser => {
+
             alert(
-                "Unable to load user."
+                "User updated successfully!"
+            );
+
+
+            // Close modal
+
+            document.getElementById(
+                "editModal"
+            ).style.display = "none";
+
+
+            // Reload users
+
+            loadUsers();
+
+        })
+
+        .catch(error => {
+
+            console.error(
+                "Error updating user:",
+                error
+            );
+
+            alert(
+                "Unable to update user."
             );
 
         });
@@ -199,3 +294,75 @@ function editUser(id) {
 // ==========================================
 // CLOSE EDIT MODAL
 // ==========================================
+
+function closeEditModal() {
+
+    document.getElementById(
+        "editModal"
+    ).style.display = "none";
+
+}
+
+
+// ==========================================
+// DELETE USER
+// ==========================================
+
+function deleteUser(id) {
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this user?"
+        );
+
+
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    fetch(`${BASE_URL}/deleteUser/${id}`, {
+
+        method: "DELETE"
+
+    })
+
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Failed to delete user"
+                );
+            }
+
+            return response.json();
+
+        })
+
+        .then(deletedUser => {
+
+            alert(
+                "User deleted successfully!"
+            );
+
+
+            // Reload users
+
+            loadUsers();
+
+        })
+
+        .catch(error => {
+
+            console.error(
+                "Error deleting user:",
+                error
+            );
+
+            alert(
+                "Unable to delete user."
+            );
+
+        });
+
+}

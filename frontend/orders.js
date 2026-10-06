@@ -1,44 +1,19 @@
 // =====================================================
-// ORDERS API
+// BASE URL
 // =====================================================
 
-const ORDERS_API =
-    "https://buynest-qbzg.onrender.com/getorders";
-
-
-// =====================================================
-// CURRENT USER
-// =====================================================
-
-const CURRENT_USER_ID =
-    Number(
-        localStorage.getItem("userId")
-    );
+const BASE_URL = "https://buynest-qbzg.onrender.com";
 
 
 // =====================================================
-// HTML ELEMENT
+// PAGE LOAD
 // =====================================================
 
-const ordersContainer =
-    document.getElementById(
-        "ordersContainer"
-    );
+document.addEventListener("DOMContentLoaded", function () {
 
+    loadOrders();
 
-// =====================================================
-// CHECK LOGIN
-// =====================================================
-
-if (!CURRENT_USER_ID) {
-
-    alert(
-        "Please login first."
-    );
-
-    window.location.href =
-        "customer-login.html";
-}
+});
 
 
 // =====================================================
@@ -47,321 +22,487 @@ if (!CURRENT_USER_ID) {
 
 async function loadOrders() {
 
+    console.log("Loading admin orders...");
+
     try {
 
-        const response =
-            await fetch(
-                ORDERS_API
-            );
+        const response = await fetch(
+            BASE_URL + "/admin/orders"
+        );
+
+
+        console.log(
+            "Orders response status:",
+            response.status
+        );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "Failed to fetch orders. Status: " +
+                "HTTP Error: " +
                 response.status
             );
 
         }
 
 
-        const result =
-            await response.json();
+        const orders = await response.json();
 
 
         console.log(
             "Orders received:",
-            result
+            orders
         );
-
-
-        // =================================================
-        // GET ORDERS ARRAY
-        // =================================================
-
-        const orders =
-            Array.isArray(result)
-                ? result
-                : result.data;
 
 
         if (!Array.isArray(orders)) {
 
             throw new Error(
-                "Invalid orders response"
+                "Orders data is not an array"
             );
 
         }
 
 
         // =================================================
-        // FILTER CURRENT USER ORDERS
+        // TOTAL ORDERS
         // =================================================
 
-        const userOrders =
-            orders.filter(
-                order => {
+        document.getElementById(
+            "totalOrders"
+        ).textContent = orders.length;
 
-                    return (
-                        order.user &&
-                        Number(
-                            order.user.id
-                        ) ===
-                        CURRENT_USER_ID
-                    );
 
-                }
+        // =================================================
+        // TABLE
+        // =================================================
+
+        const tbody =
+            document.getElementById(
+                "ordersTableBody"
             );
 
 
-        console.log(
-            "Current user's orders:",
-            userOrders
-        );
+        tbody.innerHTML = "";
 
 
         // =================================================
-        // DISPLAY
+        // NO ORDERS
         // =================================================
 
-        displayOrders(
-            userOrders
-        );
+        if (orders.length === 0) {
 
+            tbody.innerHTML = `
 
-    } catch (error) {
+                <tr>
 
-        console.error(
-            "Error loading orders:",
-            error
-        );
+                    <td
+                        colspan="7"
+                        style="text-align:center;">
 
+                        No orders found.
 
-        if (ordersContainer) {
+                    </td>
 
-            ordersContainer.innerHTML = `
-
-                <p style="
-                    text-align:center;
-                    color:red;
-                    font-size:18px;
-                ">
-
-                    Unable to load orders.
-
-                </p>
+                </tr>
 
             `;
 
+            return;
         }
 
-    }
 
-}
+        // =================================================
+        // LOAD DELIVERY PERSONS
+        // =================================================
+
+        const deliveryPersons =
+            await loadDeliveryPersons();
 
 
-// =====================================================
-// DISPLAY ORDERS
-// =====================================================
-
-function displayOrders(
-    orders
-) {
-
-    if (!ordersContainer) {
-
-        console.error(
-            "Orders container not found"
+        console.log(
+            "Delivery persons:",
+            deliveryPersons
         );
 
-        return;
 
-    }
+        // =================================================
+        // DISPLAY ORDERS
+        // =================================================
 
+        orders.forEach(function (order) {
 
-    ordersContainer.innerHTML =
-        "";
-
-
-    // =================================================
-    // NO ORDERS
-    // =================================================
-
-    if (
-        !orders ||
-        orders.length === 0
-    ) {
-
-        ordersContainer.innerHTML = `
-
-            <div style="
-                text-align:center;
-                padding:40px;
-            ">
-
-                <h2>
-                    No Orders Found
-                </h2>
-
-                <p>
-                    You have not placed any
-                    orders yet.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
+            const row =
+                document.createElement("tr");
 
 
-    // =================================================
-    // DISPLAY EACH ORDER
-    // =================================================
+            // =================================================
+            // CUSTOMER
+            // =================================================
 
-    orders.forEach(
-        order => {
-
-            const orderCard =
-                document.createElement(
-                    "div"
-                );
+            const customerName =
+                order.user
+                    ? order.user.name
+                    : "Unknown";
 
 
-            orderCard.className =
-                "order-card";
+            const customerEmail =
+                order.user
+                    ? order.user.email
+                    : "N/A";
+
+
+            // =================================================
+            // DELIVERY PERSON
+            // =================================================
+
+            let deliveryName =
+                "Not Assigned";
+
+
+            if (order.deliveryPerson) {
+
+                deliveryName =
+                    order.deliveryPerson.name;
+
+            }
 
 
             // =================================================
             // STATUS
             // =================================================
 
-            const status =
+            const orderStatus =
                 order.status ||
                 "PLACED";
 
 
-            const statusClass =
-                String(status)
-                    .toLowerCase()
-                    .replace(
-                        /\s+/g,
-                        "-"
-                    );
+            // =================================================
+            // DELIVERY OPTIONS
+            // =================================================
+
+            let deliveryOptions = `
+                <option value="">
+                    Select Delivery Person
+                </option>
+            `;
+
+
+            deliveryPersons.forEach(
+                function (person) {
+
+                    // Show only AVAILABLE persons
+                    // or the person already assigned
+
+                    if (
+                        person.status === "AVAILABLE" ||
+                        (
+                            order.deliveryPerson &&
+                            Number(person.id) ===
+                            Number(order.deliveryPerson.id)
+                        )
+                    ) {
+
+                        const selected =
+                            order.deliveryPerson &&
+                            Number(person.id) ===
+                            Number(
+                                order.deliveryPerson.id
+                            )
+                                ? "selected"
+                                : "";
+
+
+                        deliveryOptions += `
+
+                            <option
+                                value="${person.id}"
+                                ${selected}>
+
+                                ${person.name}
+                                (${person.status})
+
+                            </option>
+
+                        `;
+
+                    }
+
+                }
+            );
 
 
             // =================================================
-            // USER NAME
+            // CREATE ROW
             // =================================================
 
-            const userName =
-                order.user?.name ||
-                order.user?.username ||
-                "Customer";
+            row.innerHTML = `
+
+                <td>
+                    #${order.id}
+                </td>
 
 
-            // =================================================
-            // TOTAL
-            // =================================================
-
-            const totalAmount =
-                Number(
-                    order.totalAmount || 0
-                );
+                <td>
+                    ${customerName}
+                </td>
 
 
-            // =================================================
-            // ORDER CARD
-            // =================================================
+                <td>
+                    ${customerEmail}
+                </td>
 
-            orderCard.innerHTML = `
 
-                <div class="order-header">
+                <td>
+                    ₹${Number(
+                        order.totalAmount || 0
+                    ).toLocaleString("en-IN")}
+                </td>
 
-                    <h3>
-                        Order #${order.id}
-                    </h3>
 
-                    <span
-                        class="order-status ${statusClass}"
-                    >
-                        ${status}
+                <td>
+
+                    <span class="status confirmed">
+
+                        ${orderStatus}
+
                     </span>
 
-                </div>
+                </td>
 
 
-                <div class="order-details">
+                <td>
 
-                    <p>
+                    ${deliveryName}
 
-                        <strong>
-                            User:
-                        </strong>
-
-                        ${userName}
-
-                    </p>
+                </td>
 
 
-                    <p>
+                <td>
 
-                        <strong>
-                            Total Amount:
-                        </strong>
+                    <select
+                        id="delivery-${order.id}"
+                        style="
+                            padding:8px;
+                            border-radius:6px;
+                            border:1px solid #ccc;
+                            margin-right:5px;
+                        ">
 
-                        ₹${totalAmount}
+                        ${deliveryOptions}
 
-                    </p>
-
-                </div>
+                    </select>
 
 
-                <button
-                    class="view-order-btn"
-                    onclick="
-                        viewOrder(
-                            ${order.id}
-                        )
-                    "
-                >
+                    <button
+                        onclick="assignDelivery(${order.id})"
+                        style="
+                            padding:8px 12px;
+                            border:none;
+                            border-radius:6px;
+                            cursor:pointer;
+                        ">
 
-                    View Order
+                        Assign
 
-                </button>
+                    </button>
+
+                </td>
 
             `;
 
 
-            ordersContainer.appendChild(
-                orderCard
+            tbody.appendChild(row);
+
+        });
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "ORDER ERROR:",
+            error
+        );
+
+
+        document.getElementById(
+            "totalOrders"
+        ).textContent = "0";
+
+
+        document.getElementById(
+            "ordersTableBody"
+        ).innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    style="
+                        text-align:center;
+                        color:red;
+                    ">
+
+                    Error: ${error.message}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+// =====================================================
+// LOAD DELIVERY PERSONS
+// =====================================================
+
+async function loadDeliveryPersons() {
+
+    try {
+
+        const response =
+            await fetch(
+                BASE_URL +
+                "/deliveryperson/all"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Failed to load delivery persons"
             );
 
         }
+
+
+        return await response.json();
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Delivery loading error:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+// =====================================================
+// ASSIGN DELIVERY PERSON
+// =====================================================
+
+async function assignDelivery(orderId) {
+
+    const select =
+        document.getElementById(
+            "delivery-" + orderId
+        );
+
+
+    const deliveryPersonId =
+        select.value;
+
+
+    // =================================================
+    // CHECK SELECTION
+    // =================================================
+
+    if (!deliveryPersonId) {
+
+        alert(
+            "Please select a delivery person."
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "Assigning delivery person:",
+        deliveryPersonId,
+        "to order:",
+        orderId
     );
 
+
+    try {
+
+        const response =
+            await fetch(
+                BASE_URL +
+                "/admin/orders/" +
+                orderId +
+                "/assign/" +
+                deliveryPersonId,
+                {
+                    method: "PUT"
+                }
+            );
+
+
+        const result =
+            await response.text();
+
+
+        console.log(
+            "Assignment response:",
+            result
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result ||
+                "Failed to assign delivery person"
+            );
+
+        }
+
+
+        alert(
+            "Delivery person assigned successfully!"
+        );
+
+
+        // =================================================
+        // RELOAD ORDERS
+        // =================================================
+
+        loadOrders();
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "ASSIGNMENT ERROR:",
+            error
+        );
+
+
+        alert(
+            "Failed to assign delivery person.\n\n" +
+            error.message
+        );
+
+    }
+
 }
-
-
-// =====================================================
-// VIEW ORDER
-// =====================================================
-
-function viewOrder(
-    orderId
-) {
-
-    window.location.href =
-        "order_details.html?id=" +
-        orderId;
-
-}
-
-
-// =====================================================
-// INITIAL LOAD
-// =====================================================
-
-loadOrders();
