@@ -67,6 +67,18 @@ public class OrderControlller {
 
 
     // =====================================================
+    // GET ORDERS BY CUSTOMER ID
+    // =====================================================
+
+    @GetMapping("/getorders/user/{userId}")
+    public ResponseStructure<List<Order>> getOrdersByUserId(
+            @PathVariable Long userId) {
+
+        return orderService.getOrdersByUserId(userId);
+    }
+
+
+    // =====================================================
     // GET ORDER BY ID
     // =====================================================
 
@@ -87,10 +99,7 @@ public class OrderControlller {
             @PathVariable Long id,
             @Valid @RequestBody Order order) {
 
-        return orderService.updateOrder(
-                id,
-                order
-        );
+        return orderService.updateOrder(id, order);
     }
 
 
@@ -102,9 +111,7 @@ public class OrderControlller {
     public ResponseStructure<Order> deleteOrderById(
             @PathVariable Long id) {
 
-        return orderService.deleteOrderById(
-                id
-        );
+        return orderService.deleteOrderById(id);
     }
 
 }

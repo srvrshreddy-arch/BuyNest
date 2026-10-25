@@ -17,492 +17,176 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // =====================================================
-// LOAD ORDERS
+// LOAD CUSTOMER ORDERS
 // =====================================================
 
 async function loadOrders() {
 
-    console.log("Loading admin orders...");
+    const loading = document.getElementById("loading");
+    const ordersContainer = document.getElementById("ordersContainer");
+    const errorMessage = document.getElementById("errorMessage");
+
+    loading.style.display = "block";
+    ordersContainer.innerHTML = "";
+    errorMessage.style.display = "none";
 
     try {
 
-        const response = await fetch(
-            BASE_URL + "/admin/orders"
-        );
+        // Get logged-in customer ID
+        const userId = localStorage.getItem("userId");
 
+        // Check login
+        if (!userId || localStorage.getItem("loggedIn") !== "true") {
 
-        console.log(
-            "Orders response status:",
-            response.status
-        );
+            loading.style.display = "none";
 
-
-        if (!response.ok) {
-
-            throw new Error(
-                "HTTP Error: " +
-                response.status
-            );
-
-        }
-
-
-        const orders = await response.json();
-
-
-        console.log(
-            "Orders received:",
-            orders
-        );
-
-
-        if (!Array.isArray(orders)) {
-
-            throw new Error(
-                "Orders data is not an array"
-            );
-
-        }
-
-
-        // =================================================
-        // TOTAL ORDERS
-        // =================================================
-
-        document.getElementById(
-            "totalOrders"
-        ).textContent = orders.length;
-
-
-        // =================================================
-        // TABLE
-        // =================================================
-
-        const tbody =
-            document.getElementById(
-                "ordersTableBody"
-            );
-
-
-        tbody.innerHTML = "";
-
-
-        // =================================================
-        // NO ORDERS
-        // =================================================
-
-        if (orders.length === 0) {
-
-            tbody.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="7"
-                        style="text-align:center;">
-
-                        No orders found.
-
-                    </td>
-
-                </tr>
-
+            errorMessage.style.display = "block";
+            errorMessage.innerHTML = `
+                <p>Please log in to view your orders.</p>
+                <button onclick="window.location.href='customer-login.html'">
+                    Login
+                </button>
             `;
 
             return;
         }
 
-
-        // =================================================
-        // LOAD DELIVERY PERSONS
-        // =================================================
-
-        const deliveryPersons =
-            await loadDeliveryPersons();
-
-
-        console.log(
-            "Delivery persons:",
-            deliveryPersons
+        // Fetch orders for this customer
+        const response = await fetch(
+            `${BASE_URL}/getorders/user/${encodeURIComponent(userId)}`
         );
 
+        if (!response.ok) {
+            throw new Error(`Failed to load orders. HTTP ${response.status}`);
+        }
 
-        // =================================================
-        // DISPLAY ORDERS
-        // =================================================
+        const result = await response.json();
 
-        orders.forEach(function (order) {
+        // ResponseStructure contains the orders in data
+        const orders = Array.isArray(result)
+            ? result
+            : result.data;
 
-            const row =
-                document.createElement("tr");
+        if (!Array.isArray(orders)) {
+            throw new Error("Unexpected orders response from server.");
+        }
 
+        loading.style.display = "none";
 
-            // =================================================
-            // CUSTOMER
-            // =================================================
+        // No orders
+        if (orders.length === 0) {
 
-            const customerName =
-                order.user
-                    ? order.user.name
-                    : "Unknown";
-
-
-            const customerEmail =
-                order.user
-                    ? order.user.email
-                    : "N/A";
-
-
-            // =================================================
-            // DELIVERY PERSON
-            // =================================================
-
-            let deliveryName =
-                "Not Assigned";
-
-
-            if (order.deliveryPerson) {
-
-                deliveryName =
-                    order.deliveryPerson.name;
-
-            }
-
-
-            // =================================================
-            // STATUS
-            // =================================================
-
-            const orderStatus =
-                order.status ||
-                "PLACED";
-
-
-            // =================================================
-            // DELIVERY OPTIONS
-            // =================================================
-
-            let deliveryOptions = `
-                <option value="">
-                    Select Delivery Person
-                </option>
-            `;
-
-
-            deliveryPersons.forEach(
-                function (person) {
-
-                    // Show only AVAILABLE persons
-                    // or the person already assigned
-
-                    if (
-                        person.status === "AVAILABLE" ||
-                        (
-                            order.deliveryPerson &&
-                            Number(person.id) ===
-                            Number(order.deliveryPerson.id)
-                        )
-                    ) {
-
-                        const selected =
-                            order.deliveryPerson &&
-                            Number(person.id) ===
-                            Number(
-                                order.deliveryPerson.id
-                            )
-                                ? "selected"
-                                : "";
-
-
-                        deliveryOptions += `
-
-                            <option
-                                value="${person.id}"
-                                ${selected}>
-
-                                ${person.name}
-                                (${person.status})
-
-                            </option>
-
-                        `;
-
-                    }
-
-                }
-            );
-
-
-            // =================================================
-            // CREATE ROW
-            // =================================================
-
-            row.innerHTML = `
-
-                <td>
-                    #${order.id}
-                </td>
-
-
-                <td>
-                    ${customerName}
-                </td>
-
-
-                <td>
-                    ${customerEmail}
-                </td>
-
-
-                <td>
-                    ₹${Number(
-                        order.totalAmount || 0
-                    ).toLocaleString("en-IN")}
-                </td>
-
-
-                <td>
-
-                    <span class="status confirmed">
-
-                        ${orderStatus}
-
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    ${deliveryName}
-
-                </td>
-
-
-                <td>
-
-                    <select
-                        id="delivery-${order.id}"
-                        style="
-                            padding:8px;
-                            border-radius:6px;
-                            border:1px solid #ccc;
-                            margin-right:5px;
-                        ">
-
-                        ${deliveryOptions}
-
-                    </select>
-
-
-                    <button
-                        onclick="assignDelivery(${order.id})"
-                        style="
-                            padding:8px 12px;
-                            border:none;
-                            border-radius:6px;
-                            cursor:pointer;
-                        ">
-
-                        Assign
-
+            ordersContainer.innerHTML = `
+                <div class="no-orders">
+                    <h2>No orders yet 🛍️</h2>
+                    <p>You haven't placed any orders yet.</p>
+                    <button onclick="window.location.href='products.html'">
+                        Start Shopping
                     </button>
-
-                </td>
-
+                </div>
             `;
 
+            return;
+        }
 
-            tbody.appendChild(row);
+        // Display customer orders
+        displayOrders(orders);
 
-        });
+    } catch (error) {
 
+        console.error("Error loading customer orders:", error);
+
+        loading.style.display = "none";
+        errorMessage.style.display = "block";
+
+        errorMessage.innerHTML = `
+            <p>Unable to load your orders.</p>
+            <p>${escapeHTML(error.message)}</p>
+            <button onclick="loadOrders()">Try Again</button>
+        `;
     }
+}
 
 
-    catch (error) {
+// =====================================================
+// DISPLAY CUSTOMER ORDERS
+// =====================================================
 
-        console.error(
-            "ORDER ERROR:",
-            error
-        );
+function displayOrders(orders) {
 
+    const ordersContainer =
+        document.getElementById("ordersContainer");
 
-        document.getElementById(
-            "totalOrders"
-        ).textContent = "0";
+    ordersContainer.innerHTML = "";
 
+    orders.forEach(function (order) {
 
-        document.getElementById(
-            "ordersTableBody"
-        ).innerHTML = `
+        const orderCard = document.createElement("div");
+        orderCard.className = "order-card";
 
-            <tr>
+        const orderId = order.id;
+        const status = order.status || "PLACED";
+        const totalAmount = Number(order.totalAmount || 0);
 
-                <td
-                    colspan="7"
-                    style="
-                        text-align:center;
-                        color:red;
-                    ">
+        orderCard.innerHTML = `
+            <div class="order-card-header">
+                <h3>Order #${escapeHTML(orderId)}</h3>
+                <span class="order-status">
+                    ${escapeHTML(status)}
+                </span>
+            </div>
 
-                    Error: ${error.message}
+            <div class="order-card-body">
+                <p>
+                    <strong>Total Amount:</strong>
+                    ₹${totalAmount.toLocaleString("en-IN")}
+                </p>
 
-                </td>
+                <p>
+                    <strong>Order Status:</strong>
+                    ${escapeHTML(status)}
+                </p>
+            </div>
 
-            </tr>
-
+            <div class="order-card-footer">
+                <button class="view-order-btn">
+                    View Details
+                </button>
+            </div>
         `;
 
-    }
+        orderCard
+            .querySelector(".view-order-btn")
+            .addEventListener("click", function () {
 
+                window.location.href =
+                    `order_details.html?id=${encodeURIComponent(orderId)}`;
+
+            });
+
+        ordersContainer.appendChild(orderCard);
+
+    });
 }
 
 
 // =====================================================
-// LOAD DELIVERY PERSONS
+// ESCAPE HTML
 // =====================================================
 
-async function loadDeliveryPersons() {
+function escapeHTML(value) {
 
-    try {
+    return String(value ?? "").replace(/[&<>"']/g, function (character) {
 
-        const response =
-            await fetch(
-                BASE_URL +
-                "/deliveryperson/all"
-            );
+        const entities = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        };
 
+        return entities[character];
 
-        if (!response.ok) {
-
-            throw new Error(
-                "Failed to load delivery persons"
-            );
-
-        }
-
-
-        return await response.json();
-
-    }
-
-
-    catch (error) {
-
-        console.error(
-            "Delivery loading error:",
-            error
-        );
-
-        return [];
-
-    }
-
-}
-
-
-// =====================================================
-// ASSIGN DELIVERY PERSON
-// =====================================================
-
-async function assignDelivery(orderId) {
-
-    const select =
-        document.getElementById(
-            "delivery-" + orderId
-        );
-
-
-    const deliveryPersonId =
-        select.value;
-
-
-    // =================================================
-    // CHECK SELECTION
-    // =================================================
-
-    if (!deliveryPersonId) {
-
-        alert(
-            "Please select a delivery person."
-        );
-
-        return;
-
-    }
-
-
-    console.log(
-        "Assigning delivery person:",
-        deliveryPersonId,
-        "to order:",
-        orderId
-    );
-
-
-    try {
-
-        const response =
-            await fetch(
-                BASE_URL +
-                "/admin/orders/" +
-                orderId +
-                "/assign/" +
-                deliveryPersonId,
-                {
-                    method: "PUT"
-                }
-            );
-
-
-        const result =
-            await response.text();
-
-
-        console.log(
-            "Assignment response:",
-            result
-        );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                result ||
-                "Failed to assign delivery person"
-            );
-
-        }
-
-
-        alert(
-            "Delivery person assigned successfully!"
-        );
-
-
-        // =================================================
-        // RELOAD ORDERS
-        // =================================================
-
-        loadOrders();
-
-    }
-
-
-    catch (error) {
-
-        console.error(
-            "ASSIGNMENT ERROR:",
-            error
-        );
-
-
-        alert(
-            "Failed to assign delivery person.\n\n" +
-            error.message
-        );
-
-    }
-
+    });
 }

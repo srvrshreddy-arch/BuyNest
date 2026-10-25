@@ -17,4 +17,7 @@ public interface OrderRepository
 
     // Delivery Person Dashboard
     List<Order> findByDeliveryPersonId(Long deliveryPersonId);
+
+    // Customer Orders
+    List<Order> findByUserId(Long userId);
 }

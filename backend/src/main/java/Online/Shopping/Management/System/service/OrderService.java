@@ -39,18 +39,13 @@ public class OrderService {
 
     public ResponseStructure<Order> saveOrder(Order order) {
 
-        Order savedOrder =
-                orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
 
         ResponseStructure<Order> response =
                 new ResponseStructure<>();
 
         response.setStatus("SUCCESS");
-
-        response.setMessage(
-                "Order saved successfully"
-        );
-
+        response.setMessage("Order saved successfully");
         response.setData(savedOrder);
 
         return response;
@@ -61,139 +56,65 @@ public class OrderService {
     // BUY NOW
     // =====================================================
 
-    public ResponseStructure<Order> buyNow(
-            Buynowrequest request) {
-
-
-        // -------------------------------------------------
-        // CHECK QUANTITY
-        // -------------------------------------------------
+    public ResponseStructure<Order> buyNow(Buynowrequest request) {
 
         if (request.getQuantity() == null ||
-            request.getQuantity() < 1) {
+                request.getQuantity() < 1) {
 
             throw new IllegalArgumentException(
                     "Quantity must be at least 1"
             );
         }
 
+        // Find user
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        )
+                );
 
-        // -------------------------------------------------
-        // FIND USER
-        // -------------------------------------------------
+        // Find product
+        Product product = productRepository.findById(
+                request.getProductId()
+        ).orElseThrow(() ->
+                new ResourceNotFoundException(
+                        "Product not found"
+                )
+        );
 
-        User user =
-                userRepository
-                        .findById(request.getUserId())
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "User not found"
-                                )
-                        );
-
-
-        // -------------------------------------------------
-        // FIND PRODUCT
-        // -------------------------------------------------
-
-        Product product =
-                productRepository
-                        .findById(request.getProductId())
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Product not found"
-                                )
-                        );
-
-
-        // -------------------------------------------------
-        // CALCULATE TOTAL AMOUNT
-        // -------------------------------------------------
-
+        // Calculate total
         Double totalAmount =
-                product.getPrice()
-                       * request.getQuantity();
+                product.getPrice() * request.getQuantity();
 
+        // Create order
+        Order order = new Order();
 
-        // -------------------------------------------------
-        // CREATE ORDER
-        // -------------------------------------------------
+        order.setTotalAmount(totalAmount);
+        order.setStatus("PLACED");
+        order.setUser(user);
 
-        Order order =
-                new Order();
+        // Save order
+        Order savedOrder = orderRepository.save(order);
 
-        order.setTotalAmount(
-                totalAmount
-        );
+        // Create order item
+        Orderitem orderitem = new Orderitem();
 
-        order.setStatus(
-                "PLACED"
-        );
+        orderitem.setQuantity(request.getQuantity());
+        orderitem.setPrice(product.getPrice());
+        orderitem.setOrders(savedOrder);
+        orderitem.setProducts(product);
 
-        order.setUser(
-                user
-        );
+        // Save order item
+        orderitemRepository.save(orderitem);
 
-
-        // -------------------------------------------------
-        // SAVE ORDER
-        // -------------------------------------------------
-
-        Order savedOrder =
-                orderRepository.save(order);
-
-
-        // -------------------------------------------------
-        // CREATE ORDER ITEM
-        // -------------------------------------------------
-
-        Orderitem orderitem =
-                new Orderitem();
-
-        orderitem.setQuantity(
-                request.getQuantity()
-        );
-
-        orderitem.setPrice(
-                product.getPrice()
-        );
-
-        orderitem.setOrders(
-                savedOrder
-        );
-
-        orderitem.setProducts(
-                product
-        );
-
-
-        // -------------------------------------------------
-        // SAVE ORDER ITEM
-        // -------------------------------------------------
-
-        orderitemRepository.save(
-                orderitem
-        );
-
-
-        // -------------------------------------------------
-        // RESPONSE
-        // -------------------------------------------------
-
+        // Response
         ResponseStructure<Order> response =
                 new ResponseStructure<>();
 
-        response.setStatus(
-                "SUCCESS"
-        );
-
-        response.setMessage(
-                "Order placed successfully"
-        );
-
-        response.setData(
-                savedOrder
-        );
+        response.setStatus("SUCCESS");
+        response.setMessage("Order placed successfully");
+        response.setData(savedOrder);
 
         return response;
     }
@@ -205,24 +126,47 @@ public class OrderService {
 
     public ResponseStructure<List<Order>> getOrders() {
 
-        List<Order> orders =
-                orderRepository.findAll();
-
+        List<Order> orders = orderRepository.findAll();
 
         ResponseStructure<List<Order>> response =
                 new ResponseStructure<>();
 
-        response.setStatus(
-                "SUCCESS"
-        );
+        response.setStatus("SUCCESS");
+        response.setMessage("Orders fetched successfully");
+        response.setData(orders);
 
+        return response;
+    }
+
+
+    // =====================================================
+    // GET ORDERS BY CUSTOMER ID
+    // =====================================================
+
+    public ResponseStructure<List<Order>> getOrdersByUserId(
+            Long userId) {
+
+        // Check whether customer exists
+        userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found with id: " + userId
+                        )
+                );
+
+        // Fetch only this customer's orders
+        List<Order> orders =
+                orderRepository.findByUserId(userId);
+
+        // Prepare response
+        ResponseStructure<List<Order>> response =
+                new ResponseStructure<>();
+
+        response.setStatus("SUCCESS");
         response.setMessage(
-                "Orders fetched successfully"
+                "Customer orders fetched successfully"
         );
-
-        response.setData(
-                orders
-        );
+        response.setData(orders);
 
         return response;
     }
@@ -232,33 +176,21 @@ public class OrderService {
     // GET ORDER BY ID
     // =====================================================
 
-    public ResponseStructure<Order> getOrderById(
-            Long id) {
+    public ResponseStructure<Order> getOrderById(Long id) {
 
-        Order order =
-                orderRepository
-                        .findById(id)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Order not found"
-                                )
-                        );
-
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Order not found"
+                        )
+                );
 
         ResponseStructure<Order> response =
                 new ResponseStructure<>();
 
-        response.setStatus(
-                "SUCCESS"
-        );
-
-        response.setMessage(
-                "Order found"
-        );
-
-        response.setData(
-                order
-        );
+        response.setStatus("SUCCESS");
+        response.setMessage("Order found");
+        response.setData(order);
 
         return response;
     }
@@ -272,50 +204,26 @@ public class OrderService {
             Long id,
             Order order) {
 
-
-        Order existingOrder =
-                orderRepository
-                        .findById(id)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Order not found"
-                                )
-                        );
-
-
-        existingOrder.setTotalAmount(
-                order.getTotalAmount()
-        );
-
-        existingOrder.setStatus(
-                order.getStatus()
-        );
-
-        existingOrder.setUser(
-                order.getUser()
-        );
-
-
-        Order updatedOrder =
-                orderRepository.save(
-                        existingOrder
+        Order existingOrder = orderRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Order not found"
+                        )
                 );
 
+        existingOrder.setTotalAmount(order.getTotalAmount());
+        existingOrder.setStatus(order.getStatus());
+        existingOrder.setUser(order.getUser());
+
+        Order updatedOrder =
+                orderRepository.save(existingOrder);
 
         ResponseStructure<Order> response =
                 new ResponseStructure<>();
 
-        response.setStatus(
-                "SUCCESS"
-        );
-
-        response.setMessage(
-                "Order updated successfully"
-        );
-
-        response.setData(
-                updatedOrder
-        );
+        response.setStatus("SUCCESS");
+        response.setMessage("Order updated successfully");
+        response.setData(updatedOrder);
 
         return response;
     }
@@ -325,40 +233,25 @@ public class OrderService {
     // DELETE ORDER
     // =====================================================
 
-    public ResponseStructure<Order> deleteOrderById(
-            Long id) {
+    public ResponseStructure<Order> deleteOrderById(Long id) {
 
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Order not found"
+                        )
+                );
 
-        Order order =
-                orderRepository
-                        .findById(id)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Order not found"
-                                )
-                        );
-
-
-        orderRepository.delete(
-                order
-        );
-
+        orderRepository.delete(order);
 
         ResponseStructure<Order> response =
                 new ResponseStructure<>();
 
-        response.setStatus(
-                "SUCCESS"
-        );
-
-        response.setMessage(
-                "Order deleted successfully"
-        );
-
-        response.setData(
-                order
-        );
+        response.setStatus("SUCCESS");
+        response.setMessage("Order deleted successfully");
+        response.setData(order);
 
         return response;
     }
+
 }
